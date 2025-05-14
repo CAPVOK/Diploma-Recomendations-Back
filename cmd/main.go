@@ -1,0 +1,61 @@
+package main
+
+import (
+	"duolingo_api/cmd/application"
+	"duolingo_api/internal/config"
+	"duolingo_api/internal/infrastructure/db/postgres"
+	"duolingo_api/internal/pkg/logger"
+	"duolingo_api/internal/service"
+	"fmt"
+	"go.uber.org/zap"
+	"log"
+
+	user_repo "duolingo_api/internal/repository/user"
+	user_handler "duolingo_api/internal/transport/http/user"
+	user_usecase "duolingo_api/internal/usecase/user"
+)
+
+func main() {
+	cfg := config.MustLoad()
+
+	fmt.Printf("Server starting on %s:%d\n", cfg.Server.Host, cfg.Server.Port)
+
+	db, err := postgres.NewPostgresDB(postgres.Config{
+		Host:            cfg.DB.Host,
+		Port:            cfg.DB.Port,
+		User:            cfg.DB.User,
+		Password:        cfg.DB.Password,
+		DBName:          cfg.DB.DBName,
+		SSLMode:         cfg.DB.SSLMode,
+		MaxIdleConns:    cfg.DB.MaxIdleConns,
+		MaxOpenConns:    cfg.DB.MaxOpenConns,
+		ConnMaxLifetime: cfg.DB.ConnMaxLifetime,
+	})
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	if err := postgres.AutoMigrate(db); err != nil {
+		log.Fatalf("Failed to auto migrate: %v", err)
+	}
+
+	custom_logger, err := logger.New(cfg.Logging)
+
+	auth_service := service.NewAuthService(&service.JWTConfig{
+		SecretKey:     cfg.Auth.JWTSecret,
+		AccessExpiry:  cfg.Auth.AccessTokenExpire,
+		RefreshExpiry: cfg.Auth.RefreshTokenExpire,
+	})
+
+	if err != nil {
+		custom_logger.Error("grpc detector client failed", zap.Error(err))
+	}
+
+	ur := user_repo.NewUserRepository(db)
+	uc := user_usecase.NewUserUseCase(ur, auth_service, custom_logger)
+	uh := user_handler.NewUserHandler(uc, custom_logger)
+
+	app := application.NewApplication(cfg, custom_logger, db)
+
+	app.Start(uh, auth_service)
+}
