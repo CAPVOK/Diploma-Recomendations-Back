@@ -8,12 +8,13 @@ import (
 
 type User struct {
 	gorm.Model
-	ID         uint   `gorm:"primaryKey;autoIncrement"`
-	Username   string `json:"username" gorm:"not null;unique"`
-	Password   string `json:"password" gorm:"not null"`
-	FirstName  string `json:"firstName" gorm:"not null"`
-	LastName   string `json:"lastName" gorm:"not null"`
-	Patronymic string `json:"patronymic,omitempty"`
+	ID         uint     `gorm:"primaryKey;autoIncrement"`
+	Username   string   `json:"username" gorm:"not null;unique"`
+	Password   string   `json:"password" gorm:"not null"`
+	FirstName  string   `json:"firstName" gorm:"not null"`
+	LastName   string   `json:"lastName" gorm:"not null"`
+	Patronymic string   `json:"patronymic,omitempty"`
+	Courses    []Course `gorm:"many2many:user_courses;constraint:OnUpdate:CASCADE;OnDelete:SET NULL;"`
 }
 
 type TokenPair struct {

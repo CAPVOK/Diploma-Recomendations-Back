@@ -49,6 +49,12 @@ func NewPostgresDB(cfg Config) (*gorm.DB, error) {
 
 func AutoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(
+		&domain.TestQuestion{},
+		&domain.CourseTest{},
+		&domain.UserCourse{},
 		&domain.User{},
+		&domain.Course{},
+		&domain.Test{},
+		&domain.Question{},
 	)
 }
