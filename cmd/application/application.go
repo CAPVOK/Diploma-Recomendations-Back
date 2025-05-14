@@ -4,6 +4,7 @@ import (
 	_ "duolingo_api/docs"
 	"duolingo_api/internal/config"
 	"duolingo_api/internal/service"
+	course_handler "duolingo_api/internal/transport/http/course"
 	"duolingo_api/internal/transport/http/middleware"
 	user_handler "duolingo_api/internal/transport/http/user"
 	"fmt"
@@ -32,7 +33,7 @@ func NewApplication(config *config.Config, logger *zap.Logger, db *gorm.DB) *App
 	}
 }
 
-// Start @title Thesis Backend API
+// Start @title Baumlingo Backend API
 // @version 1.0
 // @description API для дипломного проекта
 // @termsOfService http://swagger.io/terms/
@@ -41,7 +42,7 @@ func NewApplication(config *config.Config, logger *zap.Logger, db *gorm.DB) *App
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
-func (a *Application) Start(user_handler *user_handler.UserHandler, auth_service *service.AuthService) {
+func (a *Application) Start(user_handler *user_handler.UserHandler, course_handler *course_handler.CourseHandler, auth_service *service.AuthService) {
 	router := gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
@@ -60,6 +61,34 @@ func (a *Application) Start(user_handler *user_handler.UserHandler, auth_service
 
 		protected := v1.Group("")
 		protected.Use(middleware.IsAuthenticated(auth_service, a.logger.Named("Auth Middleware")))
+		{
+			course := protected.Group("/course")
+			{
+				course.GET("")
+				course.POST("", course_handler.Create)
+				course.GET("/:id")
+				course.DELETE("/:id")
+				course.PUT("/:id")
+			}
+
+			test := protected.Group("/test")
+			{
+				test.GET("")
+				test.POST("")
+				test.GET("/:id")
+				test.DELETE("/:id")
+				test.PUT("/:id")
+			}
+
+			question := protected.Group("/question")
+			{
+				question.GET("")
+				question.POST("")
+				question.GET("/:id")
+				question.DELETE("/:id")
+				question.PUT("/:id")
+			}
+		}
 	}
 
 	serverAddr := fmt.Sprintf("%s:%d", a.config.Server.Host, a.config.Server.Port)

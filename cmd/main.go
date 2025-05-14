@@ -13,6 +13,10 @@ import (
 	user_repo "duolingo_api/internal/repository/user"
 	user_handler "duolingo_api/internal/transport/http/user"
 	user_usecase "duolingo_api/internal/usecase/user"
+
+	course_repo "duolingo_api/internal/repository/course"
+	course_handler "duolingo_api/internal/transport/http/course"
+	course_usecase "duolingo_api/internal/usecase/course"
 )
 
 func main() {
@@ -55,7 +59,11 @@ func main() {
 	uc := user_usecase.NewUserUseCase(ur, auth_service, custom_logger)
 	uh := user_handler.NewUserHandler(uc, custom_logger)
 
+	cr := course_repo.NewCourseRepository(db)
+	cu := course_usecase.NewCourseUseCase(cr, custom_logger)
+	ch := course_handler.NewCourseHandler(cu, custom_logger)
+
 	app := application.NewApplication(cfg, custom_logger, db)
 
-	app.Start(uh, auth_service)
+	app.Start(uh, ch, auth_service)
 }

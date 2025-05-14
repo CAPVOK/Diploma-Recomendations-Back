@@ -1,5 +1,25 @@
 basePath: /api/v1
 definitions:
+  internal_transport_http_course.CourseResponse:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  internal_transport_http_course.CreateCourseDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
   internal_transport_http_user.AuthResponse:
     properties:
       accessToken:
@@ -160,6 +180,27 @@ paths:
       summary: Зарегистрировать новго пользователя
       tags:
       - Auth
+  /course:
+    post:
+      parameters:
+      - description: Название и описание проекта
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_course.CreateCourseDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_transport_http_course.CourseResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать курс
+      tags:
+      - Course
   /user/me:
     get:
       produces:
