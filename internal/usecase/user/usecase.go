@@ -2,10 +2,11 @@ package user
 
 import (
 	"context"
-	"duolingo_api/internal/domain"
-	"duolingo_api/internal/repository/user"
-	"duolingo_api/internal/service"
+	"diprec_api/internal/domain"
+	"diprec_api/internal/repository/user"
+	"diprec_api/internal/service"
 	"errors"
+
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

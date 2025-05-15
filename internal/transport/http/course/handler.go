@@ -1,11 +1,12 @@
 package course
 
 import (
-	"duolingo_api/internal/domain"
-	"duolingo_api/internal/usecase/course"
+	"diprec_api/internal/domain"
+	"diprec_api/internal/usecase/course"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 type CourseHandler struct {

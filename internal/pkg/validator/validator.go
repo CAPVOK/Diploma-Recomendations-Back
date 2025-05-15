@@ -20,7 +20,7 @@ func BuildUpdates(model interface{}) map[string]interface{} {
 		"DeletedAt": true,
 	}
 
-	for i := 0; i < t.NumField(); i++ {
+	for i := range t.NumField() {
 		field := t.Field(i)
 		value := v.Field(i)
 

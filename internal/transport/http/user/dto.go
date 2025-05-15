@@ -1,7 +1,7 @@
 package user
 
 import (
-	"duolingo_api/internal/domain"
+	"diprec_api/internal/domain"
 	"time"
 )
 

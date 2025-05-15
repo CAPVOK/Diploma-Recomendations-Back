@@ -7,7 +7,7 @@ import (
 
 type Question struct {
 	gorm.Model
-	ID       uint           `gorm:"primaryKey;autoIncrement:false"`
+	ID       uint           `gorm:"primaryKey;autoIncrement"`
 	Title    string         `gorm:"not null"`
 	Type     string         `gorm:"not null"`
 	Variants datatypes.JSON `gorm:"type:jsonb"`

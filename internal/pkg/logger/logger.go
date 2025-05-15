@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"duolingo_api/internal/config"
+	"diprec_api/internal/config"
 	"os"
 	"time"
 

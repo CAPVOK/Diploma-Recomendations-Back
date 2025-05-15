@@ -1,9 +1,10 @@
 package tokens
 
 import (
-	"duolingo_api/internal/domain"
-	"github.com/golang-jwt/jwt"
+	"diprec_api/internal/domain"
 	"time"
+
+	"github.com/golang-jwt/jwt"
 )
 
 type JWTConfig struct {

@@ -1,12 +1,13 @@
 package user
 
 import (
-	"duolingo_api/internal/domain"
-	"duolingo_api/internal/usecase/user"
+	"diprec_api/internal/domain"
+	"diprec_api/internal/usecase/user"
 	"errors"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 type UserHandler struct {

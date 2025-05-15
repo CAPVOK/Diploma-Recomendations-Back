@@ -3,7 +3,8 @@ package service
 import (
 	"time"
 
-	"duolingo_api/internal/domain"
+	"diprec_api/internal/domain"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 

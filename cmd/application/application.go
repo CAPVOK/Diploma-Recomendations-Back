@@ -1,17 +1,16 @@
 package application
 
 import (
-	_ "duolingo_api/docs"
-	"duolingo_api/internal/config"
-	"duolingo_api/internal/service"
-	course_handler "duolingo_api/internal/transport/http/course"
-	"duolingo_api/internal/transport/http/middleware"
-	user_handler "duolingo_api/internal/transport/http/user"
+	_ "diprec_api/docs"
+	"diprec_api/internal/config"
+	"diprec_api/internal/service"
+	course_handler "diprec_api/internal/transport/http/course"
+	"diprec_api/internal/transport/http/middleware"
+	user_handler "diprec_api/internal/transport/http/user"
 	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/minio/minio-go/v7"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
@@ -22,7 +21,6 @@ type Application struct {
 	config *config.Config
 	logger *zap.Logger
 	db     *gorm.DB
-	minio  *minio.Client
 }
 
 func NewApplication(config *config.Config, logger *zap.Logger, db *gorm.DB) *Application {

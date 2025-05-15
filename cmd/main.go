@@ -1,22 +1,23 @@
 package main
 
 import (
-	"duolingo_api/cmd/application"
-	"duolingo_api/internal/config"
-	"duolingo_api/internal/infrastructure/db/postgres"
-	"duolingo_api/internal/pkg/logger"
-	"duolingo_api/internal/service"
+	"diprec_api/cmd/application"
+	"diprec_api/internal/config"
+	"diprec_api/internal/infrastructure/db/postgres"
+	"diprec_api/internal/pkg/logger"
+	"diprec_api/internal/service"
 	"fmt"
-	"go.uber.org/zap"
 	"log"
 
-	user_repo "duolingo_api/internal/repository/user"
-	user_handler "duolingo_api/internal/transport/http/user"
-	user_usecase "duolingo_api/internal/usecase/user"
+	"go.uber.org/zap"
 
-	course_repo "duolingo_api/internal/repository/course"
-	course_handler "duolingo_api/internal/transport/http/course"
-	course_usecase "duolingo_api/internal/usecase/course"
+	user_repo "diprec_api/internal/repository/user"
+	user_handler "diprec_api/internal/transport/http/user"
+	user_usecase "diprec_api/internal/usecase/user"
+
+	course_repo "diprec_api/internal/repository/course"
+	course_handler "diprec_api/internal/transport/http/course"
+	course_usecase "diprec_api/internal/usecase/course"
 )
 
 func main() {

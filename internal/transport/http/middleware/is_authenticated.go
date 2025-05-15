@@ -1,12 +1,13 @@
 package middleware
 
 import (
-	"duolingo_api/internal/domain"
-	"duolingo_api/internal/service"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"diprec_api/internal/domain"
+	"diprec_api/internal/service"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func IsAuthenticated(authService *service.AuthService, logger *zap.Logger) gin.HandlerFunc {

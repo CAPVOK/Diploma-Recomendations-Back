@@ -1,13 +1,14 @@
 package domain
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Test struct {
 	gorm.Model
-	ID          uint   `gorm:"primaryKey;autoIncrement:false"`
+	ID          uint   `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"not null"`
 	Description string
 	Deadline    time.Time  `gorm:"not null"`

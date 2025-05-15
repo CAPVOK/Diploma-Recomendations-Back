@@ -15,7 +15,7 @@ postgres:
   port: 5432
   user: "root"
   password: "dbpassword123"
-  dbname: "duolingo"
+  dbname: "diprec_db"
   sslmode: "disable"
   max_open_conns: 10
   max_idle_conns: 5
@@ -24,7 +24,7 @@ postgres:
 auth:
   jwt_secret: "dummy_jwt_secret_123"
   access_token_expire: "15m"
-  refresh_token_expire: "168h"  # 7 дней
+  refresh_token_expire: "168h" # 7 дней
   password_cost: 10
 
 logging:
@@ -32,6 +32,6 @@ logging:
   json_format: false
   log_file_path: "/app/logs/app.log"
   rotation_policy:
-    max_size: 100    # MB
+    max_size: 100 # MB
     max_backups: 3
-    max_age: 30      # days
+    max_age: 30 # days

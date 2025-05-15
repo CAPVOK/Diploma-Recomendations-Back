@@ -2,7 +2,8 @@ package user
 
 import (
 	"context"
-	"duolingo_api/internal/domain"
+	"diprec_api/internal/domain"
+
 	"gorm.io/gorm"
 )
 

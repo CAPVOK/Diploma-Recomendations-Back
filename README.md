@@ -4,7 +4,7 @@
 
 1. В `/config` создать файл конфигурации `dev.yaml`
 2. Скопировать содержимое `/config/example.yaml` в файл конфигурации `dev.yaml`
-3. Запустить `docker-compose` командой `docker-compose up --build -d`
+3. Запустить `docker-compose` командой `docker-compose up -d`
     1. На порту 5432 развернется PostgreSQL
 4. Запустить проект командой `go run cmd/main.go`
 

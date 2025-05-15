@@ -2,9 +2,10 @@ package course
 
 import (
 	"context"
-	"duolingo_api/internal/domain"
-	"duolingo_api/internal/pkg/validator"
+	"diprec_api/internal/domain"
+	"diprec_api/internal/pkg/validator"
 	"errors"
+
 	"gorm.io/gorm"
 )
 

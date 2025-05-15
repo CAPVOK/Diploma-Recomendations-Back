@@ -1,4 +1,4 @@
-module duolingo_api
+module diprec_api
 
 go 1.23.0
 

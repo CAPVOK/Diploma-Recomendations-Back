@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"duolingo_api/internal/domain"
+	"diprec_api/internal/domain"
 	"fmt"
 	"time"
 

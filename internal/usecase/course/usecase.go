@@ -2,8 +2,9 @@ package course
 
 import (
 	"context"
-	"duolingo_api/internal/domain"
-	"duolingo_api/internal/repository/course"
+	"diprec_api/internal/domain"
+	"diprec_api/internal/repository/course"
+
 	"go.uber.org/zap"
 )
 

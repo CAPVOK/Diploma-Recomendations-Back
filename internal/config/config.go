@@ -2,12 +2,13 @@ package config
 
 import (
 	"flag"
-	"github.com/go-playground/validator/v10"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
