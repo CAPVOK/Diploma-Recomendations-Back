@@ -27,7 +27,7 @@ func NewTestHandler(tu test.ITestUsecase, logger *zap.Logger) *TestHandler {
 // @Security BearerAuth
 // @Produce json
 // @Param input body CreateTestDTO true "Название, описание и дедлайн теста"
-// @Param id path int true "ID теста"
+// @Param id path int true "ID курса"
 // @Success 201 {object} domain.TestResponse
 // @Error 400 {object} domain.Error
 // @Error 400 {object} domain.Error

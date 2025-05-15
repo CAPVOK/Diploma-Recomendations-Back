@@ -451,7 +451,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/internal_transport_http_test.CreateTestDTO'
-      - description: ID теста
+      - description: ID курса
         in: path
         name: id
         required: true

@@ -496,7 +496,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "ID теста",
+                        "description": "ID курса",
                         "name": "id",
                         "in": "path",
                         "required": true
