@@ -18,6 +18,10 @@ import (
 	course_repo "diprec_api/internal/repository/course"
 	course_handler "diprec_api/internal/transport/http/course"
 	course_usecase "diprec_api/internal/usecase/course"
+
+	test_repo "diprec_api/internal/repository/test"
+	test_handler "diprec_api/internal/transport/http/test"
+	test_usecase "diprec_api/internal/usecase/test"
 )
 
 func main() {
@@ -64,7 +68,11 @@ func main() {
 	cu := course_usecase.NewCourseUseCase(cr, custom_logger)
 	ch := course_handler.NewCourseHandler(cu, custom_logger)
 
+	tr := test_repo.NewTestRepository(db)
+	tu := test_usecase.NewTestUsecase(tr, custom_logger)
+	th := test_handler.NewTestHandler(tu, custom_logger)
+
 	app := application.NewApplication(cfg, custom_logger, db)
 
-	app.Start(uh, ch, auth_service)
+	app.Start(uh, ch, th, auth_service)
 }

@@ -12,6 +12,35 @@ type Test struct {
 	Name        string `gorm:"not null"`
 	Description string
 	Deadline    time.Time  `gorm:"not null"`
-	Courses     []Course   `gorm:"many2many:course_tests;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Questions   []Question `gorm:"many2many:test_questions;constraint:OnUpdate:CASCADE;OnDelete:SET NULL;"`
+	Courses     []Course   `gorm:"many2many:course_tests;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Questions   []Question `gorm:"many2many:test_questions;constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`
+}
+
+type TestResponse struct {
+	ID          uint      `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Deadline    time.Time `json:"deadline"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+func (c *Test) ToTestResponse() TestResponse {
+	return TestResponse{
+		ID:          c.ID,
+		Name:        c.Name,
+		Description: c.Description,
+		Deadline:    c.Deadline,
+		CreatedAt:   c.CreatedAt,
+		UpdatedAt:   c.UpdatedAt,
+	}
+}
+
+func ToTestResponse(test []*Test) []TestResponse {
+	response := make([]TestResponse, len(test))
+	for i, test := range test {
+		response[i] = test.ToTestResponse()
+	}
+
+	return response
 }

@@ -15,4 +15,5 @@ var (
 	ErrUnauthorized        = errors.New("Неавторизован")
 	ErrInvalidRequestBody  = errors.New("Данные неверны")
 	ErrCourseNotFound      = errors.New("Курс не найден")
+	ErrTestNotFound        = errors.New("Тест не найден")
 )

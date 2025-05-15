@@ -18,6 +18,21 @@ definitions:
       message:
         type: string
     type: object
+  diprec_api_internal_domain.TestResponse:
+    properties:
+      createdAt:
+        type: string
+      deadline:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   internal_transport_http_course.CreateCourseDTO:
     properties:
       description:
@@ -27,6 +42,24 @@ definitions:
     type: object
   internal_transport_http_course.UpdateCourseDTO:
     properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  internal_transport_http_test.CreateTestDTO:
+    properties:
+      deadline:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  internal_transport_http_test.UpdateTestDTO:
+    properties:
+      deadline:
+        type: string
       description:
         type: string
       name:
@@ -332,6 +365,125 @@ paths:
       summary: Обновить курс
       tags:
       - Course
+  /test/{id}:
+    delete:
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Удалить тест
+      tags:
+      - Test
+    get:
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.TestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Получить тест по ID
+      tags:
+      - Test
+    post:
+      parameters:
+      - description: Название, описание и дедлайн теста
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_test.CreateTestDTO'
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.TestResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать тест
+      tags:
+      - Test
+    put:
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Название, описание и дедлайн курса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_test.UpdateTestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.TestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Обновить тест
+      tags:
+      - Test
   /user/me:
     get:
       produces:

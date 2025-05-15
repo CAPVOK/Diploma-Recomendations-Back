@@ -12,5 +12,5 @@ type Question struct {
 	Type     string         `gorm:"not null"`
 	Variants datatypes.JSON `gorm:"type:jsonb"`
 	Answer   datatypes.JSON `gorm:"type:jsonb"`
-	Tests    []Test         `gorm:"many2many:test_questions;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Tests    []Test         `gorm:"many2many:test_questions;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

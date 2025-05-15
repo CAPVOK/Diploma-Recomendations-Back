@@ -6,6 +6,7 @@ import (
 	"diprec_api/internal/service"
 	course_handler "diprec_api/internal/transport/http/course"
 	"diprec_api/internal/transport/http/middleware"
+	test_handler "diprec_api/internal/transport/http/test"
 	user_handler "diprec_api/internal/transport/http/user"
 	"fmt"
 	"log"
@@ -40,7 +41,7 @@ func NewApplication(config *config.Config, logger *zap.Logger, db *gorm.DB) *App
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
-func (a *Application) Start(user_handler *user_handler.UserHandler, course_handler *course_handler.CourseHandler, auth_service *service.AuthService) {
+func (a *Application) Start(user_handler *user_handler.UserHandler, course_handler *course_handler.CourseHandler, test_handler *test_handler.TestHandler, auth_service *service.AuthService) {
 	router := gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
@@ -71,11 +72,10 @@ func (a *Application) Start(user_handler *user_handler.UserHandler, course_handl
 
 			test := protected.Group("/test")
 			{
-				test.GET("")
-				test.POST("")
-				test.GET("/:id")
-				test.DELETE("/:id")
-				test.PUT("/:id")
+				test.GET("/:id", test_handler.GetByID)
+				test.POST("/:id", test_handler.Create)
+				test.DELETE("/:id", test_handler.Delete)
+				test.PUT("/:id", test_handler.Update)
 			}
 
 			question := protected.Group("/question")
