@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  internal_transport_http_course.CourseResponse:
+  diprec_api_internal_domain.CourseResponse:
     properties:
       createdAt:
         type: string
@@ -13,7 +13,19 @@ definitions:
       updatedAt:
         type: string
     type: object
+  diprec_api_internal_domain.Error:
+    properties:
+      message:
+        type: string
+    type: object
   internal_transport_http_course.CreateCourseDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  internal_transport_http_course.UpdateCourseDTO:
     properties:
       description:
         type: string
@@ -181,9 +193,30 @@ paths:
       tags:
       - Auth
   /course:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.CourseResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Получить курсы
+      tags:
+      - Course
     post:
       parameters:
-      - description: Название и описание проекта
+      - description: Название и описание курса
         in: body
         name: input
         required: true
@@ -195,10 +228,108 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/internal_transport_http_course.CourseResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.CourseResponse'
       security:
       - BearerAuth: []
       summary: Создать курс
+      tags:
+      - Course
+  /course/{id}:
+    delete:
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Удалить курс
+      tags:
+      - Course
+    get:
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.CourseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Получить курс
+      tags:
+      - Course
+    put:
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Название и описание курса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_course.UpdateCourseDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.CourseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Обновить курс
       tags:
       - Course
   /user/me:

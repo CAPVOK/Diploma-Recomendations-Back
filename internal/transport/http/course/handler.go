@@ -4,6 +4,7 @@ import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/usecase/course"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -26,8 +27,11 @@ func NewCourseHandler(cu course.ICourseUsecase, logger *zap.Logger) *CourseHandl
 // @Tags Course
 // @Security BearerAuth
 // @Produce json
-// @Param input body CreateCourseDTO true "Название и описание проекта"
-// @Success 201 {object} CourseResponse
+// @Param input body CreateCourseDTO true "Название и описание курса"
+// @Success 201 {object} domain.CourseResponse
+// @Error 400 {object} domain.Error
+// @Error 401 {object} domain.Error
+// @Error 500 {object} domain.Error
 // @Router /course [post]
 func (h *CourseHandler) Create(c *gin.Context) {
 	var req CreateCourseDTO
@@ -46,6 +50,130 @@ func (h *CourseHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response := ToCourseResponse(course)
+	response := course.ToCourseResponse()
 	c.JSON(http.StatusCreated, response)
+}
+
+// Get godoc
+// @Summary Получить курсы
+// @Tags Course
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} domain.CourseResponse[]
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /course [get]
+func (h *CourseHandler) Get(c *gin.Context) {
+	courses, err := h.cu.Get(c.Request.Context())
+	if err != nil {
+		h.logger.Error("Get courses failed", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	response := domain.ToCoursesResponse(courses)
+	c.JSON(http.StatusOK, response)
+}
+
+// GetByID Get godoc
+// @Summary Получить курс
+// @Tags Course
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "ID курса"
+// @Success 200 {object} domain.CourseResponse
+// @Failure 401 {object} domain.Error
+// @Failure 400 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /course/{id} [get]
+func (h *CourseHandler) GetByID(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	course, err := h.cu.GetById(c.Request.Context(), uint(id))
+	if err != nil {
+		h.logger.Error("Get course failed", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	response := course.ToCourseResponse()
+	c.JSON(http.StatusOK, response)
+}
+
+// Update godoc
+// @Summary Обновить курс
+// @Tags Course
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "ID курса"
+// @Param input body UpdateCourseDTO true "Название и описание курса"
+// @Success 200 {object} domain.CourseResponse
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /course/{id} [put]
+func (h *CourseHandler) Update(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	var req UpdateCourseDTO
+	if err := c.ShouldBind(&req); err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	course, err := h.cu.Update(c.Request.Context(), &domain.Course{
+		ID:          uint(id),
+		Name:        req.Name,
+		Description: req.Description,
+	})
+	if err != nil {
+		h.logger.Error("Get course failed", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	response := course.ToCourseResponse()
+	c.JSON(http.StatusOK, response)
+}
+
+// Delete godoc
+// @Summary Удалить курс
+// @Tags Course
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "ID курса"
+// @Success 200
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /course/{id} [delete]
+func (h *CourseHandler) Delete(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	if err := h.cu.Delete(c.Request.Context(), uint(id)); err != nil {
+		h.logger.Error("Delete course failed", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
 }

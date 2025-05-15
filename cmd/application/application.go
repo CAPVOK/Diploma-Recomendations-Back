@@ -62,11 +62,11 @@ func (a *Application) Start(user_handler *user_handler.UserHandler, course_handl
 		{
 			course := protected.Group("/course")
 			{
-				course.GET("")
+				course.GET("", course_handler.Get)
 				course.POST("", course_handler.Create)
-				course.GET("/:id")
-				course.DELETE("/:id")
-				course.PUT("/:id")
+				course.GET("/:id", course_handler.GetByID)
+				course.DELETE("/:id", course_handler.Delete)
+				course.PUT("/:id", course_handler.Update)
 			}
 
 			test := protected.Group("/test")

@@ -2,6 +2,10 @@ package domain
 
 import "errors"
 
+type Error struct {
+	Message string
+}
+
 var (
 	ErrUserNotFound        = errors.New("Пользователь не найден")
 	ErrInvalidCredentials  = errors.New("Неверные имя пользователя или пароль")
