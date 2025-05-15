@@ -16,4 +16,5 @@ var (
 	ErrInvalidRequestBody  = errors.New("Данные неверны")
 	ErrCourseNotFound      = errors.New("Курс не найден")
 	ErrTestNotFound        = errors.New("Тест не найден")
+	ErrQuestionNotFound    = errors.New("Вопрос не найден")
 )

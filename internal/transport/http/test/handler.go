@@ -70,7 +70,7 @@ func (h *TestHandler) Create(c *gin.Context) {
 // @Security BearerAuth
 // @Produce json
 // @Param id path int true "ID теста"
-// @Success 200 {object} domain.TestResponse
+// @Success 200 {object} domain.TestResponseWithQuestions
 // @Failure 400 {object} domain.Error
 // @Failure 401 {object} domain.Error
 // @Failure 500 {object} domain.Error
@@ -91,7 +91,7 @@ func (h *TestHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	response := test.ToTestResponse()
+	response := test.ToTestResponseWithQuestions()
 	c.JSON(http.StatusOK, response)
 }
 

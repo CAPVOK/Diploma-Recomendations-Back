@@ -369,6 +369,195 @@ const docTemplate = `{
                 }
             }
         },
+        "/question/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "Получить вопрос по ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID вопроса",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.QuestionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "Обновить вопрос",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID вопроса",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ДТО обновления вопроса",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_question.UpdateQuestionDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.QuestionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "Создать вопрос",
+                "parameters": [
+                    {
+                        "description": "ДТО создания вопроса",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_question.CreateQuestionDTO"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID теста",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.QuestionResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "Удалить тест",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID вопроса",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/test/{id}": {
             "get": {
                 "security": [
@@ -396,7 +585,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/diprec_api_internal_domain.TestResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.TestResponseWithQuestions"
                         }
                     },
                     "400": {
@@ -644,6 +833,28 @@ const docTemplate = `{
                 }
             }
         },
+        "diprec_api_internal_domain.QuestionResponse": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "variants": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        },
         "diprec_api_internal_domain.TestResponse": {
             "type": "object",
             "properties": {
@@ -661,6 +872,35 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "diprec_api_internal_domain.TestResponseWithQuestions": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deadline": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/diprec_api_internal_domain.QuestionResponse"
+                    }
                 },
                 "updatedAt": {
                     "type": "string"
@@ -686,6 +926,44 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_question.CreateQuestionDTO": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "variants": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        },
+        "internal_transport_http_question.UpdateQuestionDTO": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "variants": {
+                    "type": "object",
+                    "additionalProperties": true
                 }
             }
         },

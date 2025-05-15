@@ -35,6 +35,21 @@ definitions:
       message:
         type: string
     type: object
+  diprec_api_internal_domain.QuestionResponse:
+    properties:
+      answer:
+        additionalProperties: true
+        type: object
+      id:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+      variants:
+        additionalProperties: true
+        type: object
+    type: object
   diprec_api_internal_domain.TestResponse:
     properties:
       createdAt:
@@ -47,6 +62,25 @@ definitions:
         type: integer
       name:
         type: string
+      updatedAt:
+        type: string
+    type: object
+  diprec_api_internal_domain.TestResponseWithQuestions:
+    properties:
+      createdAt:
+        type: string
+      deadline:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      questions:
+        items:
+          $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
+        type: array
       updatedAt:
         type: string
     type: object
@@ -63,6 +97,32 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  internal_transport_http_question.CreateQuestionDTO:
+    properties:
+      answer:
+        additionalProperties: true
+        type: object
+      title:
+        type: string
+      type:
+        type: string
+      variants:
+        additionalProperties: true
+        type: object
+    type: object
+  internal_transport_http_question.UpdateQuestionDTO:
+    properties:
+      answer:
+        additionalProperties: true
+        type: object
+      title:
+        type: string
+      type:
+        type: string
+      variants:
+        additionalProperties: true
+        type: object
     type: object
   internal_transport_http_test.CreateTestDTO:
     properties:
@@ -382,6 +442,125 @@ paths:
       summary: Обновить курс
       tags:
       - Course
+  /question/{id}:
+    delete:
+      parameters:
+      - description: ID вопроса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Удалить тест
+      tags:
+      - Question
+    get:
+      parameters:
+      - description: ID вопроса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Получить вопрос по ID
+      tags:
+      - Question
+    post:
+      parameters:
+      - description: ДТО создания вопроса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_question.CreateQuestionDTO'
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать вопрос
+      tags:
+      - Question
+    put:
+      parameters:
+      - description: ID вопроса
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ДТО обновления вопроса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_question.UpdateQuestionDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Обновить вопрос
+      tags:
+      - Question
   /test/{id}:
     delete:
       parameters:
@@ -425,7 +604,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/diprec_api_internal_domain.TestResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.TestResponseWithQuestions'
         "400":
           description: Bad Request
           schema:

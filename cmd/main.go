@@ -22,6 +22,10 @@ import (
 	test_repo "diprec_api/internal/repository/test"
 	test_handler "diprec_api/internal/transport/http/test"
 	test_usecase "diprec_api/internal/usecase/test"
+
+	question_repo "diprec_api/internal/repository/question"
+	question_handler "diprec_api/internal/transport/http/question"
+	question_usecase "diprec_api/internal/usecase/question"
 )
 
 func main() {
@@ -72,7 +76,11 @@ func main() {
 	tu := test_usecase.NewTestUsecase(tr, custom_logger)
 	th := test_handler.NewTestHandler(tu, custom_logger)
 
+	qr := question_repo.NewQuestionRepository(db)
+	qu := question_usecase.NewQuestionUsecase(qr, custom_logger)
+	qh := question_handler.NewQuestionHandler(qu, custom_logger)
+
 	app := application.NewApplication(cfg, custom_logger, db)
 
-	app.Start(uh, ch, th, auth_service)
+	app.Start(uh, ch, th, qh, auth_service)
 }

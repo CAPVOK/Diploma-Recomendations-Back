@@ -21,7 +21,7 @@ type ITestUsecase interface {
 }
 
 func NewTestUsecase(repo test.ITestRepository, logger *zap.Logger) ITestUsecase {
-	return &testUsecase{repo, logger}
+	return &testUsecase{repo, logger.Named("TestUsecase")}
 }
 
 func (u *testUsecase) Create(ctx context.Context, test *domain.Test, courseID uint) (*domain.Test, error) {
