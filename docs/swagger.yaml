@@ -13,6 +13,23 @@ definitions:
       updatedAt:
         type: string
     type: object
+  diprec_api_internal_domain.CourseResponseWithTests:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      tests:
+        items:
+          $ref: '#/definitions/diprec_api_internal_domain.TestResponse'
+        type: array
+      updatedAt:
+        type: string
+    type: object
   diprec_api_internal_domain.Error:
     properties:
       message:
@@ -310,7 +327,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/diprec_api_internal_domain.CourseResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.CourseResponseWithTests'
         "400":
           description: Bad Request
           schema:
@@ -347,7 +364,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/diprec_api_internal_domain.CourseResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.CourseResponseWithTests'
         "400":
           description: Bad Request
           schema:

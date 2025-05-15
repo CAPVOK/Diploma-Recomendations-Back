@@ -46,7 +46,7 @@ func (r *courseRepository) Get(ctx context.Context) ([]*domain.Course, error) {
 func (r *courseRepository) GetByID(ctx context.Context, id uint) (*domain.Course, error) {
 	var course *domain.Course
 
-	err := r.db.First(&course, id).Error
+	err := r.db.Preload("Tests", "deleted_at IS NULL").First(&course, id).Error
 	if err != nil {
 		return nil, err
 	}

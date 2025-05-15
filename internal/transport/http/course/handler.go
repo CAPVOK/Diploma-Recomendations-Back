@@ -3,6 +3,7 @@ package course
 import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/usecase/course"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -81,7 +82,7 @@ func (h *CourseHandler) Get(c *gin.Context) {
 // @Security BearerAuth
 // @Produce json
 // @Param id path int true "ID курса"
-// @Success 200 {object} domain.CourseResponse
+// @Success 200 {object} domain.CourseResponseWithTests
 // @Failure 401 {object} domain.Error
 // @Failure 400 {object} domain.Error
 // @Failure 500 {object} domain.Error
@@ -102,7 +103,8 @@ func (h *CourseHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	response := course.ToCourseResponse()
+	response := course.ToCourseResponseWithTests()
+	fmt.Println(response)
 	c.JSON(http.StatusOK, response)
 }
 
@@ -113,7 +115,7 @@ func (h *CourseHandler) GetByID(c *gin.Context) {
 // @Produce json
 // @Param id path int true "ID курса"
 // @Param input body UpdateCourseDTO true "Название и описание курса"
-// @Success 200 {object} domain.CourseResponse
+// @Success 200 {object} domain.CourseResponseWithTests
 // @Failure 400 {object} domain.Error
 // @Failure 401 {object} domain.Error
 // @Failure 500 {object} domain.Error
@@ -145,7 +147,7 @@ func (h *CourseHandler) Update(c *gin.Context) {
 		return
 	}
 
-	response := course.ToCourseResponse()
+	response := course.ToCourseResponseWithTests()
 	c.JSON(http.StatusOK, response)
 }
 

@@ -36,7 +36,7 @@ func (c *Test) ToTestResponse() TestResponse {
 	}
 }
 
-func ToTestResponse(test []*Test) []TestResponse {
+func ToTestsResponse(test []*Test) []TestResponse {
 	response := make([]TestResponse, len(test))
 	for i, test := range test {
 		response[i] = test.ToTestResponse()

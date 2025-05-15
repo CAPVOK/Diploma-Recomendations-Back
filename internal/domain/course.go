@@ -22,6 +22,11 @@ type CourseResponse struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
+type CourseResponseWithTests struct {
+	CourseResponse
+	Tests []TestResponse `json:"tests"`
+}
+
 func (c *Course) ToCourseResponse() CourseResponse {
 	return CourseResponse{
 		ID:          c.ID,
@@ -29,6 +34,13 @@ func (c *Course) ToCourseResponse() CourseResponse {
 		Description: c.Description,
 		CreatedAt:   c.CreatedAt,
 		UpdatedAt:   c.UpdatedAt,
+	}
+}
+
+func (c *Course) ToCourseResponseWithTests() CourseResponseWithTests {
+	return CourseResponseWithTests{
+		CourseResponse: c.ToCourseResponse(),
+		Tests:          ToTestsResponse(c.Tests),
 	}
 }
 

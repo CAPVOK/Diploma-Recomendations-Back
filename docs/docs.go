@@ -241,7 +241,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/diprec_api_internal_domain.CourseResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.CourseResponseWithTests"
                         }
                     },
                     "400": {
@@ -299,7 +299,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/diprec_api_internal_domain.CourseResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.CourseResponseWithTests"
                         }
                     },
                     "400": {
@@ -604,6 +604,32 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "diprec_api_internal_domain.CourseResponseWithTests": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/diprec_api_internal_domain.TestResponse"
+                    }
                 },
                 "updatedAt": {
                     "type": "string"
