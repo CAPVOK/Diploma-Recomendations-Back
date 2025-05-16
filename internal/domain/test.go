@@ -41,10 +41,10 @@ func (c *Test) ToTestResponse() TestResponse {
 	}
 }
 
-func (c *Test) ToTestResponseWithQuestions() TestResponseWithQuestions {
+func (c *Test) ToTestResponseWithQuestions(isTeacher bool) TestResponseWithQuestions {
 	return TestResponseWithQuestions{
 		TestResponse: c.ToTestResponse(),
-		Questions:    ToQuestionsResponse(c.Questions),
+		Questions:    ToQuestionsResponse(c.Questions, isTeacher),
 	}
 }
 

@@ -91,7 +91,8 @@ func (h *TestHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	response := test.ToTestResponseWithQuestions()
+	isTeacher := c.GetString("role")
+	response := test.ToTestResponseWithQuestions(isTeacher == domain.RoleTeacher.String())
 	c.JSON(http.StatusOK, response)
 }
 

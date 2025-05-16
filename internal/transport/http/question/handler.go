@@ -54,7 +54,7 @@ func (h *QuestionHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response := question.ToQuestionResponse()
+	response := question.ToQuestionResponse(true)
 	c.JSON(http.StatusCreated, response)
 }
 
@@ -85,7 +85,7 @@ func (h *QuestionHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	response := question.ToQuestionResponse()
+	response := question.ToQuestionResponse(true)
 	c.JSON(http.StatusOK, response)
 }
 
@@ -130,7 +130,7 @@ func (h *QuestionHandler) Update(c *gin.Context) {
 		return
 	}
 
-	response := question.ToQuestionResponse()
+	response := question.ToQuestionResponse(true)
 	c.JSON(http.StatusOK, response)
 }
 

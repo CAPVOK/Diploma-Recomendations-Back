@@ -37,26 +37,29 @@ type QuestionResponse struct {
 	Answer   map[string]interface{} `json:"answer"`
 }
 
-func (c *Question) ToQuestionResponse() QuestionResponse {
+func (c *Question) ToQuestionResponse(isTeacher bool) QuestionResponse {
+	if isTeacher {
+		return QuestionResponse{
+			ID:       c.ID,
+			Title:    c.Title,
+			Type:     c.Type.String(),
+			Variants: utils.ParseJSONToMap(c.Variants),
+			Answer:   utils.ParseJSONToMap(c.Answer),
+		}
+	}
+
 	return QuestionResponse{
 		ID:       c.ID,
 		Title:    c.Title,
 		Type:     c.Type.String(),
 		Variants: utils.ParseJSONToMap(c.Variants),
-		Answer:   utils.ParseJSONToMap(c.Answer),
 	}
 }
 
-func ToQuestionsResponse(questions []*Question) []QuestionResponse {
+func ToQuestionsResponse(questions []*Question, isTeacher bool) []QuestionResponse {
 	responses := make([]QuestionResponse, len(questions))
 	for i, question := range questions {
-		responses[i] = QuestionResponse{
-			ID:       question.ID,
-			Title:    question.Title,
-			Type:     question.Type.String(),
-			Variants: utils.ParseJSONToMap(question.Variants),
-			Answer:   utils.ParseJSONToMap(question.Answer),
-		}
+		responses[i] = question.ToQuestionResponse(isTeacher)
 	}
 
 	return responses

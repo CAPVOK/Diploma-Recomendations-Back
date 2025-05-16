@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"time"
 
 	"diprec_api/internal/domain"
@@ -77,7 +76,7 @@ func (a *AuthService) ValidateToken(tokenString string) (uint, string, string, e
 	if !ok {
 		return 0, "", "", domain.ErrUnauthorized
 	}
-	fmt.Println(claims)
+
 	role, ok := claims["role"].(string)
 	if !ok {
 		return 0, "", "", domain.ErrUnauthorized

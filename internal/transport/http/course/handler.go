@@ -3,7 +3,6 @@ package course
 import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/usecase/course"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -104,7 +103,6 @@ func (h *CourseHandler) GetByID(c *gin.Context) {
 	}
 
 	response := course.ToCourseResponseWithTests()
-	fmt.Println(response)
 	c.JSON(http.StatusOK, response)
 }
 
@@ -194,7 +192,6 @@ func (h *CourseHandler) Delete(c *gin.Context) {
 func (h *CourseHandler) Enroll(c *gin.Context) {
 	idStr := c.Param("id")
 	courseID, err := strconv.Atoi(idStr)
-	fmt.Println(courseID, idStr)
 
 	if err != nil {
 		h.logger.Warn("Validation error", zap.Error(err))
