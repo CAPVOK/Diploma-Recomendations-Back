@@ -167,3 +167,41 @@ func (h *TestHandler) Delete(c *gin.Context) {
 
 	c.JSON(http.StatusOK, nil)
 }
+
+// AttachQuestion godoc
+// @Summary Прикрепить вопрос к тесту
+// @Tags Test
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "ID теста"
+// @Param input body AttachQuestionDTO true "ID вопроса"
+// @Success 200
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /test/{id}/question [post]
+func (h *TestHandler) AttachQuestion(c *gin.Context) {
+	idStr := c.Param("id")
+	testID, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	var req AttachQuestionDTO
+	if err := c.ShouldBind(&req); err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	err = h.tu.AttachQuestion(c.Request.Context(), uint(testID), uint(req.QuestionID))
+	if err != nil {
+		h.logger.Warn("Internal error", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
+}

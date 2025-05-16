@@ -28,22 +28,13 @@ func NewQuestionHandler(qu question.IQuestionUsecase, logger *zap.Logger) *Quest
 // @Security BearerAuth
 // @Produce json
 // @Param input body CreateQuestionDTO true "ДТО создания вопроса"
-// @Param id path int true "ID теста"
 // @Success 201 {object} domain.QuestionResponse
 // @Error 400 {object} domain.Error
 // @Error 400 {object} domain.Error
 // @Error 401 {object} domain.Error
 // @Error 500 {object} domain.Error
-// @Router /question/{id} [post]
+// @Router /question [post]
 func (h *QuestionHandler) Create(c *gin.Context) {
-	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		h.logger.Warn("Validation error", zap.Error(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": domain.ErrInvalidRequestBody.Error()})
-		return
-	}
-
 	var req CreateQuestionDTO
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Validation error", zap.Error(err))
@@ -56,7 +47,7 @@ func (h *QuestionHandler) Create(c *gin.Context) {
 		Type:     req.Type,
 		Variants: utils.ParseMapToJSON(req.Variants),
 		Answer:   utils.ParseMapToJSON(req.Answer),
-	}, uint(id))
+	})
 	if err != nil {
 		h.logger.Warn("Create error", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

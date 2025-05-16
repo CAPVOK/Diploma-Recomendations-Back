@@ -13,3 +13,7 @@ type UpdateTestDTO struct {
 	Description string    `json:"description"`
 	Deadline    time.Time `json:"deadline"`
 }
+
+type AttachQuestionDTO struct {
+	QuestionID int `json:"questionID"`
+}

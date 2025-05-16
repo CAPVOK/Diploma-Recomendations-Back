@@ -124,6 +124,11 @@ definitions:
         additionalProperties: true
         type: object
     type: object
+  internal_transport_http_test.AttachQuestionDTO:
+    properties:
+      questionID:
+        type: integer
+    type: object
   internal_transport_http_test.CreateTestDTO:
     properties:
       deadline:
@@ -442,6 +447,57 @@ paths:
       summary: Обновить курс
       tags:
       - Course
+  /course/{id}/enroll:
+    post:
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Записаться на курс
+      tags:
+      - Course
+  /question:
+    post:
+      parameters:
+      - description: ДТО создания вопроса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_question.CreateQuestionDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать вопрос
+      tags:
+      - Question
   /question/{id}:
     delete:
       parameters:
@@ -501,31 +557,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Получить вопрос по ID
-      tags:
-      - Question
-    post:
-      parameters:
-      - description: ДТО создания вопроса
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/internal_transport_http_question.CreateQuestionDTO'
-      - description: ID теста
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
-      security:
-      - BearerAuth: []
-      summary: Создать вопрос
       tags:
       - Question
     put:
@@ -678,6 +709,42 @@ paths:
       security:
       - BearerAuth: []
       summary: Обновить тест
+      tags:
+      - Test
+  /test/{id}/question:
+    post:
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID вопроса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_test.AttachQuestionDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Прикрепить вопрос к тесту
       tags:
       - Test
   /user/me:

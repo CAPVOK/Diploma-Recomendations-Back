@@ -369,6 +369,89 @@ const docTemplate = `{
                 }
             }
         },
+        "/course/{id}/enroll": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Записаться на курс",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID курса",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/question": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "Создать вопрос",
+                "parameters": [
+                    {
+                        "description": "ДТО создания вопроса",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_question.CreateQuestionDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.QuestionResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/question/{id}": {
             "get": {
                 "security": [
@@ -467,46 +550,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/diprec_api_internal_domain.Error"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Question"
-                ],
-                "summary": "Создать вопрос",
-                "parameters": [
-                    {
-                        "description": "ДТО создания вопроса",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/internal_transport_http_question.CreateQuestionDTO"
-                        }
-                    },
-                    {
-                        "type": "integer",
-                        "description": "ID теста",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/diprec_api_internal_domain.QuestionResponse"
                         }
                     }
                 }
@@ -720,6 +763,63 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/test/{id}/question": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Прикрепить вопрос к тесту",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID теста",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ID вопроса",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_test.AttachQuestionDTO"
+                        }
                     }
                 ],
                 "responses": {
@@ -964,6 +1064,14 @@ const docTemplate = `{
                 "variants": {
                     "type": "object",
                     "additionalProperties": true
+                }
+            }
+        },
+        "internal_transport_http_test.AttachQuestionDTO": {
+            "type": "object",
+            "properties": {
+                "questionID": {
+                    "type": "integer"
                 }
             }
         },

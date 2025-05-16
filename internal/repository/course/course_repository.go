@@ -19,6 +19,7 @@ type ICourseRepository interface {
 	GetByID(ctx context.Context, id uint) (*domain.Course, error)
 	Update(ctx context.Context, course *domain.Course) error
 	Delete(ctx context.Context, id uint) error
+	EnrollUser(ctx context.Context, courseID uint, userID uint) error
 }
 
 func NewCourseRepository(db *gorm.DB) ICourseRepository { return &courseRepository{db: db} }
@@ -71,6 +72,17 @@ func (r *courseRepository) Update(ctx context.Context, course *domain.Course) er
 
 func (r *courseRepository) Delete(ctx context.Context, id uint) error {
 	err := r.db.Delete(&domain.Course{}, id).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *courseRepository) EnrollUser(ctx context.Context, courseID uint, userID uint) error {
+	err := r.db.Model(&domain.Course{ID: courseID}).
+		Association("Users").
+		Append(&domain.User{ID: userID})
 	if err != nil {
 		return err
 	}

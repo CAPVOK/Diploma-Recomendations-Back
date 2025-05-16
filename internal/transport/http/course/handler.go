@@ -179,3 +179,37 @@ func (h *CourseHandler) Delete(c *gin.Context) {
 
 	c.JSON(http.StatusOK, nil)
 }
+
+// Enroll godoc
+// @Summary Записаться на курс
+// @Tags Course
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "ID курса"
+// @Success 200
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /course/{id}/enroll [post]
+func (h *CourseHandler) Enroll(c *gin.Context) {
+	idStr := c.Param("id")
+	courseID, err := strconv.Atoi(idStr)
+	fmt.Println(courseID, idStr)
+
+	if err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	userID := c.GetUint("userID")
+
+	err = h.cu.Enroll(c.Request.Context(), uint(courseID), userID)
+	if err != nil {
+		h.logger.Error("Enroll course failed", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
+}

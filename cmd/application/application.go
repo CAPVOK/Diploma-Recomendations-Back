@@ -75,6 +75,7 @@ func (a *Application) Start(
 				course.GET("/:id", course_handler.GetByID)
 				course.DELETE("/:id", course_handler.Delete)
 				course.PUT("/:id", course_handler.Update)
+				course.POST("/:id/enroll", course_handler.Enroll)
 			}
 
 			test := protected.Group("/test")
@@ -83,11 +84,12 @@ func (a *Application) Start(
 				test.POST("/:id", test_handler.Create)
 				test.DELETE("/:id", test_handler.Delete)
 				test.PUT("/:id", test_handler.Update)
+				test.POST("/:id/question", test_handler.AttachQuestion)
 			}
 
 			question := protected.Group("/question")
 			{
-				question.POST("/:id", question_handler.Create)
+				question.POST("", question_handler.Create)
 				question.GET("/:id", question_handler.GetByID)
 				question.DELETE("/:id", question_handler.Delete)
 				question.PUT("/:id", question_handler.Update)

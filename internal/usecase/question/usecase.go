@@ -13,7 +13,7 @@ type questionUsecase struct {
 }
 
 type IQuestionUsecase interface {
-	Create(ctx context.Context, question *domain.Question, testID uint) (*domain.Question, error)
+	Create(ctx context.Context, question *domain.Question) (*domain.Question, error)
 	GetByID(ctx context.Context, id uint) (*domain.Question, error)
 	Update(ctx context.Context, question *domain.Question) (*domain.Question, error)
 	Delete(ctx context.Context, id uint) error
@@ -23,8 +23,8 @@ func NewQuestionUsecase(repo question.IQuestionRepository, logger *zap.Logger) I
 	return &questionUsecase{repo, logger}
 }
 
-func (u *questionUsecase) Create(ctx context.Context, question *domain.Question, testID uint) (*domain.Question, error) {
-	if err := u.repo.Create(ctx, question, testID); err != nil {
+func (u *questionUsecase) Create(ctx context.Context, question *domain.Question) (*domain.Question, error) {
+	if err := u.repo.Create(ctx, question); err != nil {
 		return nil, err
 	}
 

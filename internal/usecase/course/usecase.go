@@ -19,6 +19,7 @@ type ICourseUsecase interface {
 	Delete(ctx context.Context, id uint) error
 	GetById(ctx context.Context, id uint) (*domain.Course, error)
 	Get(ctx context.Context) ([]*domain.Course, error)
+	Enroll(ctx context.Context, courseID uint, userID uint) error
 }
 
 func NewCourseUseCase(repo course.ICourseRepository, logger *zap.Logger) ICourseUsecase {
@@ -68,4 +69,13 @@ func (u *courseUsecase) Get(ctx context.Context) ([]*domain.Course, error) {
 	}
 
 	return courses, nil
+}
+
+func (u *courseUsecase) Enroll(ctx context.Context, courseID uint, userID uint) error {
+	err := u.repo.EnrollUser(ctx, courseID, userID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -18,6 +18,7 @@ type ITestUsecase interface {
 	GetByID(ctx context.Context, id uint) (*domain.Test, error)
 	Update(ctx context.Context, test *domain.Test) (*domain.Test, error)
 	Delete(ctx context.Context, id uint) error
+	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
 }
 
 func NewTestUsecase(repo test.ITestRepository, logger *zap.Logger) ITestUsecase {
@@ -60,6 +61,14 @@ func (u *testUsecase) Update(ctx context.Context, test *domain.Test) (*domain.Te
 
 func (u *testUsecase) Delete(ctx context.Context, id uint) error {
 	if err := u.repo.Delete(ctx, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *testUsecase) AttachQuestion(ctx context.Context, testID uint, questionID uint) error {
+	if err := u.repo.AttachQuestion(ctx, testID, questionID); err != nil {
 		return err
 	}
 

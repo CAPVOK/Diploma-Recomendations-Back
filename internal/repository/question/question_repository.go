@@ -13,7 +13,7 @@ type questionRepository struct {
 }
 
 type IQuestionRepository interface {
-	Create(ctx context.Context, question *domain.Question, testID uint) error
+	Create(ctx context.Context, question *domain.Question) error
 	GetByID(ctx context.Context, id uint) (*domain.Question, error)
 	Update(ctx context.Context, question *domain.Question) error
 	Delete(ctx context.Context, id uint) error
@@ -23,12 +23,12 @@ func NewQuestionRepository(db *gorm.DB) IQuestionRepository {
 	return &questionRepository{db: db}
 }
 
-func (r *questionRepository) Create(ctx context.Context, question *domain.Question, testID uint) error {
+func (r *questionRepository) Create(ctx context.Context, question *domain.Question) error {
 	if err := r.db.Create(question).Error; err != nil {
 		return err
 	}
 
-	return r.db.Model(question).Association("Tests").Append(&domain.Test{ID: testID})
+	return nil
 }
 
 func (r *questionRepository) GetByID(ctx context.Context, id uint) (*domain.Question, error) {

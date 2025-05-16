@@ -18,6 +18,7 @@ type ITestRepository interface {
 	GetByID(ctx context.Context, id uint) (*domain.Test, error)
 	Update(ctx context.Context, test *domain.Test) error
 	Delete(ctx context.Context, id uint) error
+	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
 }
 
 func NewTestRepository(db *gorm.DB) ITestRepository { return &testRepository{db: db} }
@@ -79,4 +80,13 @@ func (r *testRepository) Delete(ctx context.Context, id uint) error {
 	}
 
 	return r.db.Delete(&test).Error
+}
+
+func (r *testRepository) AttachQuestion(ctx context.Context, testID uint, questionID uint) error {
+	err := r.db.Model(&domain.Test{ID: testID}).Association("Questions").Append(&domain.Question{ID: questionID})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
