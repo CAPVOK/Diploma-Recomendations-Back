@@ -17,4 +17,5 @@ var (
 	ErrCourseNotFound      = errors.New("Курс не найден")
 	ErrTestNotFound        = errors.New("Тест не найден")
 	ErrQuestionNotFound    = errors.New("Вопрос не найден")
+	ErrInvalidRole         = errors.New("Данный функционал доступен только преподавателю!")
 )

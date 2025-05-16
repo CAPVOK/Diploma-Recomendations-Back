@@ -89,12 +89,12 @@ func (uc *userUseCase) GetMe(ctx context.Context, userID uint) (*domain.User, er
 }
 
 func (uc *userUseCase) RefreshTokens(ctx context.Context, refreshToken string) (*domain.TokenPair, error) {
-	userID, err := uc.auth.ValidateRefreshToken(refreshToken)
+	userID, role, err := uc.auth.ValidateRefreshToken(refreshToken)
 	if err != nil {
 		return nil, domain.ErrInvalidRefreshToken
 	}
 
-	pair, err := uc.auth.GenerateTokens(&domain.User{ID: userID})
+	pair, err := uc.auth.GenerateTokens(&domain.User{ID: userID, Role: domain.Role(role)})
 	if err != nil {
 		return nil, err
 	}

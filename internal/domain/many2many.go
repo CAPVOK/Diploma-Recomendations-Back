@@ -1,16 +1,16 @@
 package domain
 
 type UserCourse struct {
-	UserID   uint
-	CourseID uint
+	UserID   uint `gorm:"primary_key"`
+	CourseID uint `gorm:"primary_key"`
 }
 
 type CourseTest struct {
-	CourseID uint
-	TestID   uint
+	CourseID uint `gorm:"primary_key"`
+	TestID   uint `gorm:"primary_key"`
 }
 
 type TestQuestion struct {
-	TestID     uint
-	QuestionID uint
+	TestID     uint `gorm:"primary_key"`
+	QuestionID uint `gorm:"primary_key"`
 }

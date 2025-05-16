@@ -14,7 +14,19 @@ type User struct {
 	FirstName  string   `json:"firstName" gorm:"not null"`
 	LastName   string   `json:"lastName" gorm:"not null"`
 	Patronymic string   `json:"patronymic,omitempty"`
+	Role       Role     `json:"role" gorm:"type:varchar(20);not null;role IN ('STUDENT', 'TEACHER');default:'STUDENT'"`
 	Courses    []Course `gorm:"many2many:user_courses;constraint:OnUpdate:CASCADE;OnDelete:SET NULL;"`
+}
+
+type Role string
+
+const (
+	RoleTeacher Role = "TEACHER"
+	RoleStudent Role = "STUDENT"
+)
+
+func (r Role) String() string {
+	return string(r)
 }
 
 type TokenPair struct {

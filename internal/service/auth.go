@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"time"
 
 	"diprec_api/internal/domain"
@@ -26,6 +27,7 @@ func (a *AuthService) GenerateTokens(user *domain.User) (*domain.TokenPair, erro
 	// Access token
 	accessClaims := jwt.MapClaims{
 		"userID":    user.ID,
+		"role":      user.Role,
 		"tokenType": "access",
 		"exp":       time.Now().Add(a.config.AccessExpiry).Unix(),
 	}
@@ -39,6 +41,7 @@ func (a *AuthService) GenerateTokens(user *domain.User) (*domain.TokenPair, erro
 	// Refresh token
 	refreshClaims := jwt.MapClaims{
 		"userID":    user.ID,
+		"role":      user.Role,
 		"tokenType": "refresh",
 		"exp":       time.Now().Add(a.config.RefreshExpiry).Unix(),
 	}
@@ -56,38 +59,43 @@ func (a *AuthService) GenerateTokens(user *domain.User) (*domain.TokenPair, erro
 	}, nil
 }
 
-func (a *AuthService) ValidateToken(tokenString string) (uint, string, error) {
+func (a *AuthService) ValidateToken(tokenString string) (uint, string, string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(a.config.SecretKey), nil
 	})
 
 	if err != nil || !token.Valid {
-		return 0, "", domain.ErrUnauthorized
+		return 0, "", "", domain.ErrUnauthorized
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return 0, "", domain.ErrUnauthorized
+		return 0, "", "", domain.ErrUnauthorized
 	}
 
 	userID, ok := claims["userID"].(float64)
 	if !ok {
-		return 0, "", domain.ErrUnauthorized
+		return 0, "", "", domain.ErrUnauthorized
+	}
+	fmt.Println(claims)
+	role, ok := claims["role"].(string)
+	if !ok {
+		return 0, "", "", domain.ErrUnauthorized
 	}
 
 	tokenType, _ := claims["tokenType"].(string)
-	return uint(userID), tokenType, nil
+	return uint(userID), role, tokenType, nil
 }
 
-func (a *AuthService) ValidateRefreshToken(tokenString string) (uint, error) {
-	userID, tokenType, err := a.ValidateToken(tokenString)
+func (a *AuthService) ValidateRefreshToken(tokenString string) (uint, string, error) {
+	userID, role, tokenType, err := a.ValidateToken(tokenString)
 	if err != nil {
-		return 0, err
+		return 0, "", err
 	}
 
 	if tokenType != "refresh" {
-		return 0, domain.ErrInvalidTokenType
+		return 0, "", domain.ErrInvalidTokenType
 	}
 
-	return userID, nil
+	return userID, role, nil
 }

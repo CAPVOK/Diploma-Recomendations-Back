@@ -71,28 +71,28 @@ func (a *Application) Start(
 			course := protected.Group("/course")
 			{
 				course.GET("", course_handler.Get)
-				course.POST("", course_handler.Create)
+				course.POST("", middleware.OnlyTeacher(), course_handler.Create)
 				course.GET("/:id", course_handler.GetByID)
-				course.DELETE("/:id", course_handler.Delete)
-				course.PUT("/:id", course_handler.Update)
+				course.DELETE("/:id", middleware.OnlyTeacher(), course_handler.Delete)
+				course.PUT("/:id", middleware.OnlyTeacher(), course_handler.Update)
 				course.POST("/:id/enroll", course_handler.Enroll)
 			}
 
 			test := protected.Group("/test")
 			{
 				test.GET("/:id", test_handler.GetByID)
-				test.POST("/:id", test_handler.Create)
-				test.DELETE("/:id", test_handler.Delete)
-				test.PUT("/:id", test_handler.Update)
-				test.POST("/:id/question", test_handler.AttachQuestion)
+				test.POST("/:id", middleware.OnlyTeacher(), test_handler.Create)
+				test.DELETE("/:id", middleware.OnlyTeacher(), test_handler.Delete)
+				test.PUT("/:id", middleware.OnlyTeacher(), test_handler.Update)
+				test.POST("/:id/question", middleware.OnlyTeacher(), test_handler.AttachQuestion)
 			}
 
 			question := protected.Group("/question")
 			{
-				question.POST("", question_handler.Create)
-				question.GET("/:id", question_handler.GetByID)
-				question.DELETE("/:id", question_handler.Delete)
-				question.PUT("/:id", question_handler.Update)
+				question.POST("", middleware.OnlyTeacher(), question_handler.Create)
+				question.GET("/:id", middleware.OnlyTeacher(), question_handler.GetByID)
+				question.DELETE("/:id", middleware.OnlyTeacher(), question_handler.Delete)
+				question.PUT("/:id", middleware.OnlyTeacher(), question_handler.Update)
 			}
 		}
 	}
