@@ -3,7 +3,6 @@ package domain
 import (
 	"diprec_api/internal/pkg/utils"
 	"encoding/json"
-	"fmt"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"strings"
