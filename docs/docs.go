@@ -566,7 +566,7 @@ const docTemplate = `{
                 "tags": [
                     "Question"
                 ],
-                "summary": "Удалить тест",
+                "summary": "Удалить вопрос",
                 "parameters": [
                     {
                         "type": "integer",
@@ -579,6 +579,66 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/question/{id}/check": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "Проверить вопрос",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID вопроса",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ДТО ответа на вопрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_question.CheckAnswerDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.QuestionAnswer"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -950,13 +1010,22 @@ const docTemplate = `{
                 }
             }
         },
+        "diprec_api_internal_domain.QuestionAnswer": {
+            "type": "object",
+            "properties": {
+                "answer": {},
+                "isCorrect": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "diprec_api_internal_domain.QuestionResponse": {
             "type": "object",
             "properties": {
-                "answer": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
+                "answer": {},
                 "id": {
                     "type": "integer"
                 },
@@ -1117,13 +1186,16 @@ const docTemplate = `{
                 }
             }
         },
+        "internal_transport_http_question.CheckAnswerDTO": {
+            "type": "object",
+            "properties": {
+                "answer": {}
+            }
+        },
         "internal_transport_http_question.CreateQuestionDTO": {
             "type": "object",
             "properties": {
-                "answer": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
+                "answer": {},
                 "title": {
                     "type": "string"
                 },
@@ -1146,10 +1218,7 @@ const docTemplate = `{
         "internal_transport_http_question.UpdateQuestionDTO": {
             "type": "object",
             "properties": {
-                "answer": {
-                    "type": "object",
-                    "additionalProperties": true
-                },
+                "answer": {},
                 "title": {
                     "type": "string"
                 },

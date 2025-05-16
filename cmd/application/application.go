@@ -98,6 +98,7 @@ func (a *Application) Start(
 				question.GET("/:id", middleware.OnlyTeacher(), question_handler.GetByID)
 				question.DELETE("/:id", middleware.OnlyTeacher(), question_handler.Delete)
 				question.PUT("/:id", middleware.OnlyTeacher(), question_handler.Update)
+				question.POST("/:id/check", question_handler.Check)
 			}
 		}
 	}

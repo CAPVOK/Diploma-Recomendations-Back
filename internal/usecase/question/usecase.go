@@ -3,6 +3,7 @@ package question
 import (
 	"context"
 	"diprec_api/internal/domain"
+	"diprec_api/internal/pkg/utils"
 	"diprec_api/internal/repository/question"
 	"go.uber.org/zap"
 )
@@ -17,6 +18,7 @@ type IQuestionUsecase interface {
 	GetByID(ctx context.Context, id uint) (*domain.Question, error)
 	Update(ctx context.Context, question *domain.Question) (*domain.Question, error)
 	Delete(ctx context.Context, id uint) error
+	Check(ctx context.Context, id uint, answer interface{}) (*domain.QuestionAnswer, error)
 }
 
 func NewQuestionUsecase(repo question.IQuestionRepository, logger *zap.Logger) IQuestionUsecase {
@@ -54,4 +56,18 @@ func (u *questionUsecase) Delete(ctx context.Context, id uint) error {
 	}
 
 	return nil
+}
+
+func (u *questionUsecase) Check(ctx context.Context, id uint, answer interface{}) (*domain.QuestionAnswer, error) {
+	question, err := u.repo.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	isCorrect := question.CheckAnswer(answer)
+	return &domain.QuestionAnswer{
+		IsCorrect: isCorrect,
+		Message:   utils.GenerateFeedbackMessage(isCorrect),
+		Answer:    question.Answer,
+	}, nil
 }

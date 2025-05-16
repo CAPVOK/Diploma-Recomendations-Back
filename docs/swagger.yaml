@@ -46,11 +46,17 @@ definitions:
       message:
         type: string
     type: object
+  diprec_api_internal_domain.QuestionAnswer:
+    properties:
+      answer: {}
+      isCorrect:
+        type: boolean
+      message:
+        type: string
+    type: object
   diprec_api_internal_domain.QuestionResponse:
     properties:
-      answer:
-        additionalProperties: true
-        type: object
+      answer: {}
       id:
         type: integer
       title:
@@ -157,11 +163,13 @@ definitions:
       name:
         type: string
     type: object
+  internal_transport_http_question.CheckAnswerDTO:
+    properties:
+      answer: {}
+    type: object
   internal_transport_http_question.CreateQuestionDTO:
     properties:
-      answer:
-        additionalProperties: true
-        type: object
+      answer: {}
       title:
         type: string
       type:
@@ -178,9 +186,7 @@ definitions:
     type: object
   internal_transport_http_question.UpdateQuestionDTO:
     properties:
-      answer:
-        additionalProperties: true
-        type: object
+      answer: {}
       title:
         type: string
       type:
@@ -563,7 +569,7 @@ paths:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
       security:
       - BearerAuth: []
-      summary: Удалить тест
+      summary: Удалить вопрос
       tags:
       - Question
     get:
@@ -628,6 +634,44 @@ paths:
       security:
       - BearerAuth: []
       summary: Обновить вопрос
+      tags:
+      - Question
+  /question/{id}/check:
+    post:
+      parameters:
+      - description: ID вопроса
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ДТО ответа на вопрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_question.CheckAnswerDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.QuestionAnswer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Проверить вопрос
       tags:
       - Question
   /test/{id}:

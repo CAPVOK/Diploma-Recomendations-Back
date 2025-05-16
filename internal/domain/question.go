@@ -2,8 +2,11 @@ package domain
 
 import (
 	"diprec_api/internal/pkg/utils"
+	"encoding/json"
+	"fmt"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type Question struct {
@@ -34,7 +37,47 @@ type QuestionResponse struct {
 	Title    string                 `json:"title"`
 	Type     string                 `json:"type" enums:"SINGLE,MULTIPLE,TEXT,NUMBER" example:"SINGLE"`
 	Variants map[string]interface{} `json:"variants"`
-	Answer   map[string]interface{} `json:"answer"`
+	Answer   interface{}            `json:"answer"`
+}
+
+type QuestionAnswer struct {
+	IsCorrect bool        `json:"isCorrect"`
+	Message   string      `json:"message"`
+	Answer    interface{} `json:"answer"`
+}
+
+func (q *Question) CheckAnswer(userAnswer interface{}) bool {
+	var correctAnswer interface{}
+	if err := json.Unmarshal(q.Answer, &correctAnswer); err != nil {
+		return false
+	}
+
+	switch q.Type {
+	case Single:
+		correctStr, ok1 := correctAnswer.(string)
+		userStr, ok2 := userAnswer.(string)
+		return ok1 && ok2 && userStr == correctStr
+
+	case Multiple:
+		correctSlice, ok1 := utils.ToStringSlice(correctAnswer)
+		userSlice, ok2 := utils.ToStringSlice(userAnswer)
+		if !ok1 || !ok2 {
+			return false
+		}
+		return utils.EqualStringSlices(correctSlice, userSlice)
+
+	case Text:
+		correctStr, ok1 := correctAnswer.(string)
+		userStr, ok2 := userAnswer.(string)
+		return ok1 && ok2 && strings.TrimSpace(strings.ToLower(userStr)) == strings.TrimSpace(strings.ToLower(correctStr))
+
+	case Number:
+		correctNum, ok1 := correctAnswer.(float64)
+		userNum, ok2 := userAnswer.(float64)
+		return ok1 && ok2 && userNum == correctNum
+	}
+
+	return false
 }
 
 func (c *Question) ToQuestionResponse(isTeacher bool) QuestionResponse {

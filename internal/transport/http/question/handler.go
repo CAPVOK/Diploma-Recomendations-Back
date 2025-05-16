@@ -46,7 +46,7 @@ func (h *QuestionHandler) Create(c *gin.Context) {
 		Title:    req.Title,
 		Type:     domain.Type(req.Type),
 		Variants: utils.ParseMapToJSON(req.Variants),
-		Answer:   utils.ParseMapToJSON(req.Answer),
+		Answer:   utils.ParseToJSON(req.Answer),
 	})
 	if err != nil {
 		h.logger.Warn("Create error", zap.Error(err))
@@ -122,7 +122,7 @@ func (h *QuestionHandler) Update(c *gin.Context) {
 		Title:    req.Title,
 		Type:     domain.Type(req.Type),
 		Variants: utils.ParseMapToJSON(req.Variants),
-		Answer:   utils.ParseMapToJSON(req.Answer),
+		Answer:   utils.ParseToJSON(req.Answer),
 	})
 	if err != nil {
 		h.logger.Warn("Update error", zap.Error(err))
@@ -135,7 +135,7 @@ func (h *QuestionHandler) Update(c *gin.Context) {
 }
 
 // Delete godoc
-// @Summary Удалить тест
+// @Summary Удалить вопрос
 // @Tags Question
 // @Security BearerAuth
 // @Produce json
@@ -162,4 +162,42 @@ func (h *QuestionHandler) Delete(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, nil)
+}
+
+// Check godoc
+// @Summary Проверить вопрос
+// @Tags Question
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "ID вопроса"
+// @Param input body CheckAnswerDTO true "ДТО ответа на вопрос"
+// @Success 200 {object} domain.QuestionAnswer
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /question/{id}/check [post]
+func (h *QuestionHandler) Check(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	var req CheckAnswerDTO
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Warn("Validation error", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	result, err := h.qu.Check(c.Request.Context(), uint(id), req.Answer)
+	if err != nil {
+		h.logger.Warn("Check error", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }
