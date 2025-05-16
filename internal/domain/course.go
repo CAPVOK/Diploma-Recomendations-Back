@@ -8,7 +8,7 @@ import (
 type Course struct {
 	gorm.Model
 	ID          uint   `gorm:"primaryKey;autoIncrement"`
-	Name        string `gorm:"not null"`
+	Name        string `gorm:"not null;unique"`
 	Description string
 	Users       []*User `gorm:"many2many:user_courses;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Tests       []*Test `gorm:"many2many:course_tests;constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`

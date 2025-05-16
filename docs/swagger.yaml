@@ -56,6 +56,12 @@ definitions:
       title:
         type: string
       type:
+        enum:
+        - SINGLE
+        - MULTIPLE
+        - TEXT
+        - NUMBER
+        example: SINGLE
         type: string
       variants:
         additionalProperties: true
@@ -159,6 +165,12 @@ definitions:
       title:
         type: string
       type:
+        enum:
+        - SINGLE
+        - TEXT
+        - NUMBER
+        - MULTIPLE
+        example: SINGLE
         type: string
       variants:
         additionalProperties: true
@@ -172,6 +184,12 @@ definitions:
       title:
         type: string
       type:
+        enum:
+        - SINGLE
+        - TEXT
+        - NUMBER
+        - MULTIPLE
+        example: SINGLE
         type: string
       variants:
         additionalProperties: true

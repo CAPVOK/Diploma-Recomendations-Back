@@ -957,7 +957,14 @@
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "SINGLE",
+                        "MULTIPLE",
+                        "TEXT",
+                        "NUMBER"
+                    ],
+                    "example": "SINGLE"
                 },
                 "variants": {
                     "type": "object",
@@ -1114,7 +1121,14 @@
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "SINGLE",
+                        "TEXT",
+                        "NUMBER",
+                        "MULTIPLE"
+                    ],
+                    "example": "SINGLE"
                 },
                 "variants": {
                     "type": "object",
@@ -1133,7 +1147,14 @@
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "SINGLE",
+                        "TEXT",
+                        "NUMBER",
+                        "MULTIPLE"
+                    ],
+                    "example": "SINGLE"
                 },
                 "variants": {
                     "type": "object",

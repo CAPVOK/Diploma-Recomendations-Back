@@ -44,7 +44,7 @@ func (h *QuestionHandler) Create(c *gin.Context) {
 
 	question, err := h.qu.Create(c.Request.Context(), &domain.Question{
 		Title:    req.Title,
-		Type:     req.Type,
+		Type:     domain.Type(req.Type),
 		Variants: utils.ParseMapToJSON(req.Variants),
 		Answer:   utils.ParseMapToJSON(req.Answer),
 	})
@@ -120,7 +120,7 @@ func (h *QuestionHandler) Update(c *gin.Context) {
 	question, err := h.qu.Update(c.Request.Context(), &domain.Question{
 		ID:       uint(id),
 		Title:    req.Title,
-		Type:     req.Type,
+		Type:     domain.Type(req.Type),
 		Variants: utils.ParseMapToJSON(req.Variants),
 		Answer:   utils.ParseMapToJSON(req.Answer),
 	})

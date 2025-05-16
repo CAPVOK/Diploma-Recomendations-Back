@@ -964,7 +964,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "SINGLE",
+                        "MULTIPLE",
+                        "TEXT",
+                        "NUMBER"
+                    ],
+                    "example": "SINGLE"
                 },
                 "variants": {
                     "type": "object",
@@ -1121,7 +1128,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "SINGLE",
+                        "TEXT",
+                        "NUMBER",
+                        "MULTIPLE"
+                    ],
+                    "example": "SINGLE"
                 },
                 "variants": {
                     "type": "object",
@@ -1140,7 +1154,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "SINGLE",
+                        "TEXT",
+                        "NUMBER",
+                        "MULTIPLE"
+                    ],
+                    "example": "SINGLE"
                 },
                 "variants": {
                     "type": "object",
