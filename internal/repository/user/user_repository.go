@@ -33,7 +33,7 @@ func (r *userRepository) Create(ctx context.Context, user *domain.User) error {
 func (r *userRepository) GetByID(ctx context.Context, id uint) (*domain.User, error) {
 	var user domain.User
 
-	err := r.db.First(&user, "id = ?", id).Error
+	err := r.db.Preload("Courses", "deleted_at IS NULL").First(&user, id).Error
 	if err != nil {
 		return nil, err
 	}

@@ -68,6 +68,11 @@ func (a *Application) Start(
 		protected := v1.Group("")
 		protected.Use(middleware.IsAuthenticated(auth_service, a.logger.Named("Auth Middleware")))
 		{
+			user := protected.Group("/user")
+			{
+				user.GET("/me", user_handler.Me)
+			}
+
 			course := protected.Group("/course")
 			{
 				course.GET("", course_handler.Get)

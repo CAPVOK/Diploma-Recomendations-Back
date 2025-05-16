@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  diprec_api_internal_domain.AuthResponse:
+    properties:
+      accessToken:
+        type: string
+      expiresAt:
+        type: string
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/diprec_api_internal_domain.UserResponse'
+    type: object
   diprec_api_internal_domain.CourseResponse:
     properties:
       createdAt:
@@ -84,6 +95,48 @@ definitions:
       updatedAt:
         type: string
     type: object
+  diprec_api_internal_domain.UserResponse:
+    properties:
+      createdAt:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      patronymic:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  diprec_api_internal_domain.UserResponseWithCourses:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/diprec_api_internal_domain.CourseResponse'
+        type: array
+      createdAt:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      patronymic:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
   internal_transport_http_course.CreateCourseDTO:
     properties:
       description:
@@ -147,17 +200,6 @@ definitions:
       name:
         type: string
     type: object
-  internal_transport_http_user.AuthResponse:
-    properties:
-      accessToken:
-        type: string
-      expiresAt:
-        type: string
-      refreshToken:
-        type: string
-      user:
-        $ref: '#/definitions/internal_transport_http_user.UserResponse'
-    type: object
   internal_transport_http_user.CreateUserDTO:
     properties:
       firstName:
@@ -177,11 +219,6 @@ definitions:
     - password
     - username
     type: object
-  internal_transport_http_user.ErrorResponse:
-    properties:
-      message:
-        type: string
-    type: object
   internal_transport_http_user.LoginUserDTO:
     properties:
       password:
@@ -199,23 +236,6 @@ definitions:
         type: string
     required:
     - refreshToken
-    type: object
-  internal_transport_http_user.UserResponse:
-    properties:
-      createdAt:
-        type: string
-      firstName:
-        type: string
-      id:
-        type: integer
-      lastName:
-        type: string
-      patronymic:
-        type: string
-      updatedAt:
-        type: string
-      username:
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -241,15 +261,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_transport_http_user.AuthResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.AuthResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_transport_http_user.ErrorResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/internal_transport_http_user.ErrorResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
       summary: Аутентификация пользователя
       tags:
       - Auth
@@ -270,15 +290,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_transport_http_user.AuthResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.AuthResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_transport_http_user.ErrorResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/internal_transport_http_user.ErrorResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
       summary: Обновить токены авторизации
       tags:
       - Auth
@@ -299,12 +319,12 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/internal_transport_http_user.AuthResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.AuthResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/internal_transport_http_user.ErrorResponse'
-      summary: Зарегистрировать новго пользователя
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      summary: Зарегистрировать пользователя
       tags:
       - Auth
   /course:
@@ -755,11 +775,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_transport_http_user.UserResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.UserResponseWithCourses'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/internal_transport_http_user.ErrorResponse'
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
       security:
       - BearerAuth: []
       summary: Получение информации о текущем пользователе

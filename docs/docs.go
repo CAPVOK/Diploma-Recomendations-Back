@@ -43,19 +43,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.AuthResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.AuthResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.ErrorResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.ErrorResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
                     }
                 }
@@ -88,19 +88,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.AuthResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.AuthResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.ErrorResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.ErrorResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
                     }
                 }
@@ -117,7 +117,7 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Зарегистрировать новго пользователя",
+                "summary": "Зарегистрировать пользователя",
                 "parameters": [
                     {
                         "description": "Данные пользователя",
@@ -133,13 +133,13 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.AuthResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.AuthResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.ErrorResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
                     }
                 }
@@ -865,13 +865,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.UserResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.UserResponseWithCourses"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/internal_transport_http_user.ErrorResponse"
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
                     }
                 }
@@ -879,6 +879,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "diprec_api_internal_domain.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/diprec_api_internal_domain.UserResponse"
+                }
+            }
+        },
         "diprec_api_internal_domain.CourseResponse": {
             "type": "object",
             "properties": {
@@ -1007,6 +1024,70 @@ const docTemplate = `{
                 }
             }
         },
+        "diprec_api_internal_domain.UserResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "diprec_api_internal_domain.UserResponseWithCourses": {
+            "type": "object",
+            "properties": {
+                "courses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/diprec_api_internal_domain.CourseResponse"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "internal_transport_http_course.CreateCourseDTO": {
             "type": "object",
             "properties": {
@@ -1103,23 +1184,6 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_transport_http_user.AuthResponse": {
-            "type": "object",
-            "properties": {
-                "accessToken": {
-                    "type": "string"
-                },
-                "expiresAt": {
-                    "type": "string"
-                },
-                "refreshToken": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/internal_transport_http_user.UserResponse"
-                }
-            }
-        },
         "internal_transport_http_user.CreateUserDTO": {
             "type": "object",
             "required": [
@@ -1147,14 +1211,6 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_transport_http_user.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "internal_transport_http_user.LoginUserDTO": {
             "type": "object",
             "required": [
@@ -1178,32 +1234,6 @@ const docTemplate = `{
             ],
             "properties": {
                 "refreshToken": {
-                    "type": "string"
-                }
-            }
-        },
-        "internal_transport_http_user.UserResponse": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "firstName": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "lastName": {
-                    "type": "string"
-                },
-                "patronymic": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

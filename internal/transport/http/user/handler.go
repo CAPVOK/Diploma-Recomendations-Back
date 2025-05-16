@@ -24,19 +24,19 @@ func NewUserHandler(uc user.IUserUseCase, logger *zap.Logger) *UserHandler {
 }
 
 // Register godoc
-// @Summary Зарегистрировать новго пользователя
+// @Summary Зарегистрировать пользователя
 // @tags Auth
 // @Accept json
 // @Produce json
 // @Param input body CreateUserDTO true "Данные пользователя"
-// @Success 201 {object} AuthResponse
-// @Success 400 {object} ErrorResponse
+// @Success 201 {object} domain.AuthResponse
+// @Success 400 {object} domain.Error
 // @Router /auth/register [post]
 func (h *UserHandler) Register(c *gin.Context) {
 	var req CreateUserDTO
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Validation error", zap.Error(err))
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: domain.ErrInvalidRequestBody.Error()})
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
 		return
 	}
 
@@ -49,11 +49,11 @@ func (h *UserHandler) Register(c *gin.Context) {
 	})
 	if err != nil {
 		h.logger.Error("Register error", zap.Error(err))
-		c.JSON(errorStatusCode(err), ErrorResponse{Message: err.Error()})
+		c.JSON(errorStatusCode(err), domain.Error{Message: err.Error()})
 		return
 	}
 
-	response := ToUserResponse(user.ID, user.Username, user.FirstName, user.LastName, user.Patronymic, user.CreatedAt, user.UpdatedAt)
+	response := user.ToUserResponse()
 
 	c.JSON(http.StatusCreated, response)
 }
@@ -64,33 +64,34 @@ func (h *UserHandler) Register(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body LoginUserDTO true "Данные для авторизации"
-// @Success 200 {object} AuthResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 401 {object} ErrorResponse
+// @Success 200 {object} domain.AuthResponse
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
 // @Router /auth/login [post]
 func (h *UserHandler) Login(c *gin.Context) {
 	var req LoginUserDTO
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Validation error", zap.Error(err))
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: domain.ErrInvalidRequestBody.Error()})
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
 		return
 	}
 
 	user, err := h.uc.Authenticate(c.Request.Context(), req.Username, req.Password)
 	if err != nil {
 		h.logger.Warn("Authenticate error", zap.Error(err))
-		c.JSON(errorStatusCode(err), ErrorResponse{Message: err.Error()})
+		c.JSON(errorStatusCode(err), domain.Error{Message: err.Error()})
 		return
 	}
 
 	tokens, err := h.uc.GenerateTokens(user)
 	if err != nil {
 		h.logger.Warn("GenerateTokens error", zap.Error(err))
-		c.JSON(errorStatusCode(err), ErrorResponse{Message: err.Error()})
+		c.JSON(errorStatusCode(err), domain.Error{Message: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, ToAuthResponse(tokens, user))
+	response := user.ToAuthResponse(tokens)
+	c.JSON(http.StatusOK, response)
 }
 
 // Refresh godoc
@@ -99,22 +100,22 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param input body RefreshUserDTO true "Refresh Token"
-// @Success 200 {object} AuthResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 401 {object} ErrorResponse
+// @Success 200 {object} domain.AuthResponse
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
 // @Router /auth/refresh [post]
 func (h *UserHandler) Refresh(c *gin.Context) {
 	var req RefreshUserDTO
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: domain.ErrInvalidRequestBody.Error()})
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
 		return
 	}
 
 	pair, err := h.uc.RefreshTokens(c.Request.Context(), req.RefreshToken)
 	if err != nil {
 		h.logger.Warn("Refresh error", zap.Error(err))
-		c.JSON(errorStatusCode(err), ErrorResponse{Message: err.Error()})
+		c.JSON(errorStatusCode(err), domain.Error{Message: err.Error()})
 		return
 	}
 
@@ -126,8 +127,8 @@ func (h *UserHandler) Refresh(c *gin.Context) {
 // @Tags User
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} UserResponse
-// @Failure 401 {object} ErrorResponse
+// @Success 200 {object} domain.UserResponseWithCourses
+// @Failure 401 {object} domain.Error
 // @Router /user/me [get]
 func (h *UserHandler) Me(c *gin.Context) {
 	userID := c.GetUint("userID")
@@ -135,12 +136,11 @@ func (h *UserHandler) Me(c *gin.Context) {
 	user, err := h.uc.GetMe(c.Request.Context(), userID)
 	if err != nil {
 		h.logger.Warn("GetMe", zap.Error(err))
-		c.JSON(errorStatusCode(err), ErrorResponse{Message: err.Error()})
+		c.JSON(errorStatusCode(err), domain.Error{Message: err.Error()})
 		return
 	}
 
-	response := ToUserResponse(user.ID, user.Username, user.FirstName, user.LastName, user.Patronymic, user.CreatedAt, user.UpdatedAt)
-
+	response := user.ToUserResponseWithCourses()
 	c.JSON(http.StatusOK, response)
 }
 
