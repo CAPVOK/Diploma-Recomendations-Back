@@ -3,10 +3,11 @@ package test
 import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/usecase/test"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type TestHandler struct {
@@ -102,11 +103,11 @@ func (h *TestHandler) GetByID(c *gin.Context) {
 // @Security BearerAuth
 // @Produce json
 // @Param id path int true "ID теста"
-// @Param input body UpdateTestDTO true "Название, описание и дедлайн курса"
+// @Param input body UpdateTestDTO true "Название, описание и дедлайн теста"
 // @Success 200 {object} domain.TestResponse
-// @Success 400 {object} domain.Error
-// @Success 400 {object} domain.Error
-// @Success 500 {object} domain.Error
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
 // @Router /test/{id} [put]
 func (h *TestHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")

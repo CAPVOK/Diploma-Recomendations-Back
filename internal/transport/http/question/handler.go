@@ -4,10 +4,11 @@ import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/pkg/utils"
 	"diprec_api/internal/usecase/question"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type QuestionHandler struct {
@@ -81,7 +82,7 @@ func (h *QuestionHandler) GetByID(c *gin.Context) {
 	question, err := h.qu.GetByID(c.Request.Context(), uint(id))
 	if err != nil {
 		h.logger.Warn("GetByID error", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
 		return
 	}
 
@@ -126,7 +127,7 @@ func (h *QuestionHandler) Update(c *gin.Context) {
 	})
 	if err != nil {
 		h.logger.Warn("Update error", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
 		return
 	}
 
@@ -157,7 +158,7 @@ func (h *QuestionHandler) Delete(c *gin.Context) {
 	err = h.qu.Delete(c.Request.Context(), uint(id))
 	if err != nil {
 		h.logger.Warn("Delete error", zap.Error(err))
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
 		return
 	}
 

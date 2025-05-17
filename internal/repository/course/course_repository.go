@@ -45,14 +45,17 @@ func (r *courseRepository) Get(ctx context.Context) ([]*domain.Course, error) {
 }
 
 func (r *courseRepository) GetByID(ctx context.Context, id uint) (*domain.Course, error) {
-	var course *domain.Course
+	var course domain.Course
 
 	err := r.db.Preload("Tests", "deleted_at IS NULL").First(&course, id).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, domain.ErrCourseNotFound
+		}
 		return nil, err
 	}
 
-	return course, nil
+	return &course, nil
 }
 
 func (r *courseRepository) Update(ctx context.Context, course *domain.Course) error {
@@ -71,11 +74,13 @@ func (r *courseRepository) Update(ctx context.Context, course *domain.Course) er
 }
 
 func (r *courseRepository) Delete(ctx context.Context, id uint) error {
-	err := r.db.Delete(&domain.Course{}, id).Error
-	if err != nil {
-		return err
+	result := r.db.Delete(&domain.Course{}, id)
+	if result.Error != nil {
+		return result.Error
 	}
-
+	if result.RowsAffected == 0 {
+		return domain.ErrCourseNotFound
+	}
 	return nil
 }
 

@@ -24,13 +24,16 @@ func NewUserHandler(uc user.IUserUseCase, logger *zap.Logger) *UserHandler {
 }
 
 // Register godoc
-// @Summary Зарегистрировать пользователя
-// @tags Auth
+// @Summary Зарегистрировать нового пользователя
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param input body CreateUserDTO true "Данные пользователя"
-// @Success 201 {object} domain.AuthResponse
-// @Success 400 {object} domain.Error
+// @Success 201 {object} domain.AuthResponse "Пользователь успешно зарегистрирован"
+// @Failure 400 {object} domain.Error "Неверный формат запроса / тело запроса"
+// @Failure 401 {object} domain.Error "Ошибка авторизации"
+// @Failure 409 {object} domain.Error "Пользователь с таким именем уже существует"
+// @Failure 500 {object} domain.Error "Внутренняя ошибка сервера"
 // @Router /auth/register [post]
 func (h *UserHandler) Register(c *gin.Context) {
 	var req CreateUserDTO

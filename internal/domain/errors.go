@@ -7,15 +7,21 @@ type Error struct {
 }
 
 var (
-	ErrUserNotFound        = errors.New("Пользователь не найден")
+	/* common */
+	ErrInternalServer     = errors.New("Внутренняя ошибка сервера")
+	ErrUnauthorized       = errors.New("Неавторизован")
+	ErrInvalidRequestBody = errors.New("Данные неверны")
+	/* auth */
 	ErrInvalidCredentials  = errors.New("Неверные имя пользователя или пароль")
 	ErrUserExists          = errors.New("Пользователь с таким именем уже существует")
+	ErrUserNotFound        = errors.New("Пользователь не найден")
 	ErrInvalidRefreshToken = errors.New("Рефреш токен невалиден")
 	ErrInvalidTokenType    = errors.New("Неверный тип токена")
-	ErrUnauthorized        = errors.New("Неавторизован")
-	ErrInvalidRequestBody  = errors.New("Данные неверны")
-	ErrCourseNotFound      = errors.New("Курс не найден")
-	ErrTestNotFound        = errors.New("Тест не найден")
-	ErrQuestionNotFound    = errors.New("Вопрос не найден")
 	ErrInvalidRole         = errors.New("Данный функционал доступен только преподавателю!")
+	/* course */
+	ErrCourseNotFound = errors.New("Курс не найден")
+	/* test */
+	ErrTestNotFound = errors.New("Тест не найден")
+	/* question */
+	ErrQuestionNotFound = errors.New("Вопрос не найден")
 )
