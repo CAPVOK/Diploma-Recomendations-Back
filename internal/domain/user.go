@@ -16,6 +16,7 @@ type User struct {
 	Patronymic string    `json:"patronymic,omitempty"`
 	Role       Role      `json:"role" gorm:"type:varchar(20);not null;role IN ('STUDENT', 'TEACHER');default:'STUDENT'"`
 	Courses    []*Course `gorm:"many2many:user_courses;constraint:OnUpdate:CASCADE;OnDelete:SET NULL;"`
+	Tests      []*Test   `gorm:"many2many:user_test;constraint:OnUpdate:CASCADE;OnDelete:SET NULL;"`
 }
 
 type Role string
