@@ -214,7 +214,9 @@ func (h *QuestionHandler) Check(c *gin.Context) {
 		return
 	}
 
-	result, err := h.qu.Check(c.Request.Context(), uint(id), req.Answer)
+	userID := c.GetUint("userID")
+
+	result, err := h.qu.Check(c.Request.Context(), uint(id), userID, req.Answer)
 	if err != nil {
 		h.logger.Warn("Check error", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -3,10 +3,10 @@ package domain
 import (
 	"diprec_api/internal/pkg/utils"
 	"encoding/json"
-	"strings"
-
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
+	"strings"
+	"time"
 )
 
 type Question struct {
@@ -44,6 +44,17 @@ type QuestionAnswer struct {
 	IsCorrect bool        `json:"isCorrect"`
 	Message   string      `json:"message"`
 	Answer    interface{} `json:"answer"`
+}
+
+type UserAnswer struct {
+	QuestionID uint        `json:"question_id"`
+	Title      string      `json:"question_title"`
+	Type       string      `json:"question_type"`
+	Variants   interface{} `json:"question_variants"`
+	Answer     interface{} `json:"question_answer"`
+	UserID     uint        `json:"user_id"`
+	IsCorrect  bool        `json:"is_correct"`
+	Timestamp  time.Time   `json:"timestamp"`
 }
 
 func (q *Question) CheckAnswer(userAnswer interface{}) bool {
@@ -87,7 +98,7 @@ func (c *Question) ToQuestionResponse(isTeacher bool) QuestionResponse {
 			Title:    c.Title,
 			Type:     c.Type.String(),
 			Variants: utils.ParseJSONToMap(c.Variants),
-			Answer:   utils.ParseJSONInterface(c.Answer),
+			Answer:   utils.ParseJSONToMap(c.Answer),
 		}
 	}
 

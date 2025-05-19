@@ -12,12 +12,13 @@ import (
 )
 
 type Config struct {
-	Environment string        `validate:"required,oneof=development staging production"`
-	Server      ServerConfig  `validate:"required"`
-	GRPC        GRPCConfig    `validate:"required"`
-	DB          DBConfig      `mapstructure:"postgres"`
-	Auth        AuthConfig    `mapstructure:"auth"`
-	Logging     LoggingConfig `mapstructure:"logging"`
+	Environment   string        `validate:"required,oneof=development staging production"`
+	Server        ServerConfig  `validate:"required"`
+	GRPC          GRPCConfig    `validate:"required"`
+	DB            DBConfig      `mapstructure:"postgres"`
+	Auth          AuthConfig    `mapstructure:"auth"`
+	Logging       LoggingConfig `mapstructure:"logging"`
+	KafkaProducer KafkaProducer `mapstructure:"kafka_producer"`
 }
 
 type GRPCConfig struct {
@@ -61,6 +62,11 @@ type LoggingConfig struct {
 		MaxBackups int `mapstructure:"max_backups"`
 		MaxAge     int `mapstructure:"max_age"`
 	}
+}
+
+type KafkaProducer struct {
+	Broker string `mapstructure:"broker"`
+	Topic  string `mapstructure:"topic"`
 }
 
 func MustLoad() *Config {

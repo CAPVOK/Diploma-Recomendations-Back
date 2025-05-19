@@ -10,6 +10,10 @@ server:
 grpc:
   detector_url: "127.0.0.1:8081"
 
+kafka_producer:
+  broker: "localhost:9092"
+  topic: "user_answers"
+
 postgres:
   host: 127.0.0.1
   port: 5432

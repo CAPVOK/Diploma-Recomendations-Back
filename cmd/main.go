@@ -4,12 +4,11 @@ import (
 	"diprec_api/cmd/application"
 	"diprec_api/internal/config"
 	"diprec_api/internal/infrastructure/db/postgres"
+	"diprec_api/internal/infrastructure/kafka"
 	"diprec_api/internal/pkg/logger"
 	"diprec_api/internal/service"
 	"fmt"
 	"log"
-
-	"go.uber.org/zap"
 
 	user_repo "diprec_api/internal/repository/user"
 	user_handler "diprec_api/internal/transport/http/user"
@@ -60,10 +59,8 @@ func main() {
 		RefreshExpiry: cfg.Auth.RefreshTokenExpire,
 	})
 
-	if err != nil {
-		custom_logger.Error("grpc detector client failed", zap.Error(err))
-	}
-
+	kp := kafka.NewKafkaProducer(cfg.KafkaProducer.Broker, cfg.KafkaProducer.Topic, custom_logger)
+	fmt.Printf("Kafka producer starting on %s:%d\n", cfg.KafkaProducer, cfg.Server.Port)
 	ur := user_repo.NewUserRepository(db)
 	uc := user_usecase.NewUserUseCase(ur, auth_service, custom_logger)
 	uh := user_handler.NewUserHandler(uc, custom_logger)
@@ -77,7 +74,7 @@ func main() {
 	th := test_handler.NewTestHandler(tu, custom_logger)
 
 	qr := question_repo.NewQuestionRepository(db)
-	qu := question_usecase.NewQuestionUsecase(qr, custom_logger)
+	qu := question_usecase.NewQuestionUsecase(qr, kp, custom_logger)
 	qh := question_handler.NewQuestionHandler(qu, custom_logger)
 
 	app := application.NewApplication(cfg, custom_logger, db)
