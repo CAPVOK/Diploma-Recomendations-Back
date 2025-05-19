@@ -90,10 +90,12 @@ func (a *Application) Start(
 				test.DELETE("/:id", middleware.OnlyTeacher(), test_handler.Delete)
 				test.PUT("/:id", middleware.OnlyTeacher(), test_handler.Update)
 				test.POST("/:id/question", middleware.OnlyTeacher(), test_handler.AttachQuestion)
+				test.DELETE("/:id/question", middleware.OnlyTeacher(), test_handler.DetachQuestion)
 			}
 
 			question := protected.Group("/question")
 			{
+				question.GET("", middleware.OnlyTeacher(), question_handler.GetAll)
 				question.POST("", middleware.OnlyTeacher(), question_handler.Create)
 				question.GET("/:id", middleware.OnlyTeacher(), question_handler.GetByID)
 				question.DELETE("/:id", middleware.OnlyTeacher(), question_handler.Delete)

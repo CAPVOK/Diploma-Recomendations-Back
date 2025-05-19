@@ -117,7 +117,7 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Зарегистрировать пользователя",
+                "summary": "Зарегистрировать нового пользователя",
                 "parameters": [
                     {
                         "description": "Данные пользователя",
@@ -131,13 +131,31 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Пользователь успешно зарегистрирован",
                         "schema": {
                             "$ref": "#/definitions/diprec_api_internal_domain.AuthResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Неверный формат запроса / тело запроса",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Ошибка авторизации",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "409": {
+                        "description": "Пользователь с таким именем уже существует",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
                         "schema": {
                             "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
@@ -227,7 +245,7 @@ const docTemplate = `{
                 "tags": [
                     "Course"
                 ],
-                "summary": "Получить курс",
+                "summary": "Получить курс по ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -252,6 +270,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
@@ -314,6 +338,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -346,7 +376,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Курс успешно удалён"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -356,6 +386,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
@@ -418,6 +454,43 @@ const docTemplate = `{
             }
         },
         "/question": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "Получить все вопросы",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/diprec_api_internal_domain.QuestionResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -733,7 +806,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Название, описание и дедлайн курса",
+                        "description": "Название, описание и дедлайн теста",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -751,6 +824,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
@@ -884,10 +963,68 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Вопрос прикреплен"
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Открепить вопрос от теста",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID теста",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ID вопроса для удаления",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_test.RemoveQuestionDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Вопрос откреплён"
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
                         "schema": {
                             "$ref": "#/definitions/diprec_api_internal_domain.Error"
                         }
@@ -1257,6 +1394,17 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "internal_transport_http_test.RemoveQuestionDTO": {
+            "type": "object",
+            "required": [
+                "questionId"
+            ],
+            "properties": {
+                "questionId": {
+                    "type": "integer"
                 }
             }
         },

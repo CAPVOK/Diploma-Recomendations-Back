@@ -17,3 +17,7 @@ type UpdateTestDTO struct {
 type AttachQuestionDTO struct {
 	QuestionID int `json:"questionID"`
 }
+
+type RemoveQuestionDTO struct {
+	QuestionID uint `json:"questionId" binding:"required"`
+}

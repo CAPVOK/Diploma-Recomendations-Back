@@ -59,6 +59,27 @@ func (h *QuestionHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
+// GetAll godoc
+// @Summary Получить все вопросы
+// @Tags Question
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {array} domain.QuestionResponse
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /question [get]
+func (h *QuestionHandler) GetAll(c *gin.Context) {
+	questions, err := h.qu.GetAll(c.Request.Context())
+	if err != nil {
+		h.logger.Warn("GetAll error", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	response := domain.ToQuestionsResponse(questions, true)
+	c.JSON(http.StatusOK, response)
+}
+
 // GetByID Get godoc
 // @Summary Получить вопрос по ID
 // @Tags Question

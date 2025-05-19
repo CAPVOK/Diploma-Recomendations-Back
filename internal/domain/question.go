@@ -3,9 +3,10 @@ package domain
 import (
 	"diprec_api/internal/pkg/utils"
 	"encoding/json"
+	"strings"
+
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
-	"strings"
 )
 
 type Question struct {
@@ -86,7 +87,7 @@ func (c *Question) ToQuestionResponse(isTeacher bool) QuestionResponse {
 			Title:    c.Title,
 			Type:     c.Type.String(),
 			Variants: utils.ParseJSONToMap(c.Variants),
-			Answer:   utils.ParseJSONToMap(c.Answer),
+			Answer:   utils.ParseJSONInterface(c.Answer),
 		}
 	}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"diprec_api/internal/domain"
 	"diprec_api/internal/repository/test"
+
 	"go.uber.org/zap"
 )
 
@@ -19,6 +20,7 @@ type ITestUsecase interface {
 	Update(ctx context.Context, test *domain.Test) (*domain.Test, error)
 	Delete(ctx context.Context, id uint) error
 	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
+	DetachQuestion(ctx context.Context, testID uint, questionID uint) error
 }
 
 func NewTestUsecase(repo test.ITestRepository, logger *zap.Logger) ITestUsecase {
@@ -69,6 +71,14 @@ func (u *testUsecase) Delete(ctx context.Context, id uint) error {
 
 func (u *testUsecase) AttachQuestion(ctx context.Context, testID uint, questionID uint) error {
 	if err := u.repo.AttachQuestion(ctx, testID, questionID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *testUsecase) DetachQuestion(ctx context.Context, testID uint, questionID uint) error {
+	if err := u.repo.DetachQuestion(ctx, testID, questionID); err != nil {
 		return err
 	}
 

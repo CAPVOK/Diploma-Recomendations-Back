@@ -215,6 +215,13 @@ definitions:
       name:
         type: string
     type: object
+  internal_transport_http_test.RemoveQuestionDTO:
+    properties:
+      questionId:
+        type: integer
+    required:
+    - questionId
+    type: object
   internal_transport_http_test.UpdateTestDTO:
     properties:
       deadline:
@@ -341,14 +348,26 @@ paths:
       - application/json
       responses:
         "201":
-          description: Created
+          description: Пользователь успешно зарегистрирован
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.AuthResponse'
         "400":
-          description: Bad Request
+          description: Неверный формат запроса / тело запроса
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
-      summary: Зарегистрировать пользователя
+        "401":
+          description: Ошибка авторизации
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "409":
+          description: Пользователь с таким именем уже существует
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      summary: Зарегистрировать нового пользователя
       tags:
       - Auth
   /course:
@@ -405,13 +424,17 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Курс успешно удалён
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
         "401":
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
         "500":
@@ -445,13 +468,17 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
       security:
       - BearerAuth: []
-      summary: Получить курс
+      summary: Получить курс по ID
       tags:
       - Course
     put:
@@ -480,6 +507,10 @@ paths:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
         "401":
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
         "500":
@@ -522,6 +553,29 @@ paths:
       tags:
       - Course
   /question:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Получить все вопросы
+      tags:
+      - Question
     post:
       parameters:
       - description: ДТО создания вопроса
@@ -767,7 +821,7 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Название, описание и дедлайн курса
+      - description: Название, описание и дедлайн теста
         in: body
         name: input
         required: true
@@ -784,6 +838,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
         "500":
           description: Internal Server Error
           schema:
@@ -794,6 +852,43 @@ paths:
       tags:
       - Test
   /test/{id}/question:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID вопроса для удаления
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_test.RemoveQuestionDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Вопрос откреплён
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Открепить вопрос от теста
+      tags:
+      - Test
     post:
       parameters:
       - description: ID теста
@@ -811,7 +906,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Вопрос прикреплен
         "400":
           description: Bad Request
           schema:

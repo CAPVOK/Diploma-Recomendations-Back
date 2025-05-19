@@ -5,6 +5,7 @@ import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/pkg/validator"
 	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -15,6 +16,7 @@ type questionRepository struct {
 type IQuestionRepository interface {
 	Create(ctx context.Context, question *domain.Question) error
 	GetByID(ctx context.Context, id uint) (*domain.Question, error)
+	GetAll(ctx context.Context) ([]*domain.Question, error)
 	Update(ctx context.Context, question *domain.Question) error
 	Delete(ctx context.Context, id uint) error
 }
@@ -29,6 +31,17 @@ func (r *questionRepository) Create(ctx context.Context, question *domain.Questi
 	}
 
 	return nil
+}
+
+func (r *questionRepository) GetAll(ctx context.Context) ([]*domain.Question, error) {
+	var questions []*domain.Question
+
+	err := r.db.Find(&questions).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return questions, nil
 }
 
 func (r *questionRepository) GetByID(ctx context.Context, id uint) (*domain.Question, error) {

@@ -2,10 +2,23 @@ package utils
 
 import (
 	"encoding/json"
-	"gorm.io/datatypes"
 	"reflect"
 	"sort"
+
+	"gorm.io/datatypes"
 )
+
+// ParseJSONInterface разбирает JSON в interface{}:
+//   - map[string]interface{} для объектов,
+//   - []interface{} для массивов,
+//   - string, float64 и т.д. для примитивов.
+func ParseJSONInterface(data datatypes.JSON) interface{} {
+	var v interface{}
+	if err := json.Unmarshal(data, &v); err != nil {
+		return nil
+	}
+	return v
+}
 
 func ParseJSONToMap(data []byte) map[string]interface{} {
 	var result map[string]interface{}

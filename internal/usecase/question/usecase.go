@@ -5,6 +5,7 @@ import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/pkg/utils"
 	"diprec_api/internal/repository/question"
+
 	"go.uber.org/zap"
 )
 
@@ -15,6 +16,7 @@ type questionUsecase struct {
 
 type IQuestionUsecase interface {
 	Create(ctx context.Context, question *domain.Question) (*domain.Question, error)
+	GetAll(ctx context.Context) ([]*domain.Question, error)
 	GetByID(ctx context.Context, id uint) (*domain.Question, error)
 	Update(ctx context.Context, question *domain.Question) (*domain.Question, error)
 	Delete(ctx context.Context, id uint) error
@@ -31,6 +33,15 @@ func (u *questionUsecase) Create(ctx context.Context, question *domain.Question)
 	}
 
 	return question, nil
+}
+
+func (u *questionUsecase) GetAll(ctx context.Context) ([]*domain.Question, error) {
+	questions, err := u.repo.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return questions, nil
 }
 
 func (u *questionUsecase) GetByID(ctx context.Context, id uint) (*domain.Question, error) {

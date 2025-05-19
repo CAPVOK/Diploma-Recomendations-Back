@@ -5,6 +5,7 @@ import (
 	"diprec_api/internal/domain"
 	"diprec_api/internal/pkg/validator"
 	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -19,6 +20,7 @@ type ITestRepository interface {
 	Update(ctx context.Context, test *domain.Test) error
 	Delete(ctx context.Context, id uint) error
 	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
+	DetachQuestion(ctx context.Context, testID uint, questionID uint) error
 }
 
 func NewTestRepository(db *gorm.DB) ITestRepository { return &testRepository{db: db} }
@@ -88,5 +90,16 @@ func (r *testRepository) AttachQuestion(ctx context.Context, testID uint, questi
 		return err
 	}
 
+	return nil
+}
+
+func (r *testRepository) DetachQuestion(ctx context.Context, testID uint, questionID uint) error {
+	err := r.db.
+		Model(&domain.Test{ID: testID}).
+		Association("Questions").
+		Delete(&domain.Question{ID: questionID})
+	if err != nil {
+		return err
+	}
 	return nil
 }
