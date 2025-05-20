@@ -929,6 +929,114 @@ const docTemplate = `{
                 }
             }
         },
+        "/test/{id}/begin": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Приступить к тесту (студент)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID теста",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/test/{id}/finish": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Test"
+                ],
+                "summary": "Завершить тест (студент)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID теста",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ID вопроса для удаления",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_transport_http_test.RemoveQuestionDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/diprec_api_internal_domain.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/test/{id}/question": {
             "post": {
                 "security": [
@@ -1051,16 +1159,13 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Test"
                 ],
-                "summary": "Запустить тест",
+                "summary": "Запустить тест (учитель)",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1105,16 +1210,13 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Test"
                 ],
-                "summary": "Остановить тест",
+                "summary": "Остановить тест (учитель)",
                 "parameters": [
                     {
                         "type": "integer",

@@ -859,6 +859,74 @@ paths:
       summary: Обновить тест
       tags:
       - Test
+  /test/{id}/begin:
+    post:
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Приступить к тесту (студент)
+      tags:
+      - Test
+  /test/{id}/finish:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID вопроса для удаления
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/internal_transport_http_test.RemoveQuestionDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Завершить тест (студент)
+      tags:
+      - Test
   /test/{id}/question:
     delete:
       consumes:
@@ -934,8 +1002,6 @@ paths:
       - Test
   /test/{id}/start:
     put:
-      consumes:
-      - application/json
       parameters:
       - description: ID теста
         in: path
@@ -963,13 +1029,11 @@ paths:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
       security:
       - BearerAuth: []
-      summary: Запустить тест
+      summary: Запустить тест (учитель)
       tags:
       - Test
   /test/{id}/stop:
     put:
-      consumes:
-      - application/json
       parameters:
       - description: ID теста
         in: path
@@ -997,7 +1061,7 @@ paths:
             $ref: '#/definitions/diprec_api_internal_domain.Error'
       security:
       - BearerAuth: []
-      summary: Остановить тест
+      summary: Остановить тест (учитель)
       tags:
       - Test
   /user/me:

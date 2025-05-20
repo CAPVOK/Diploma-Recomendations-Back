@@ -21,6 +21,8 @@ type ITestRepository interface {
 	Delete(ctx context.Context, id uint) error
 	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
 	DetachQuestion(ctx context.Context, testID uint, questionID uint) error
+	UpdateUserTest(ctx context.Context, userTest *domain.UserTests) error
+	CreateUserTest(ctx context.Context, userTest *domain.UserTests) error
 }
 
 func NewTestRepository(db *gorm.DB) ITestRepository { return &testRepository{db: db} }
@@ -101,5 +103,28 @@ func (r *testRepository) DetachQuestion(ctx context.Context, testID uint, questi
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (r *testRepository) CreateUserTest(ctx context.Context, userTests *domain.UserTests) error {
+	if err := r.db.Model(&domain.UserTests{}).Create(userTests).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *testRepository) UpdateUserTest(ctx context.Context, userTest *domain.UserTests) error {
+	updates := validator.BuildUpdates(userTest)
+
+	result := r.db.Model(&domain.UserTests{}).Where("user_id = ? AND test_id = ?", userTest.UserID, userTest.TestID).Updates(updates).First(&userTest)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return domain.ErrTestNotFound
+		}
+
+		return result.Error
+	}
+
 	return nil
 }

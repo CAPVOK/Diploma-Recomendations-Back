@@ -93,6 +93,8 @@ func (a *Application) Start(
 				test.DELETE("/:id/question", middleware.OnlyTeacher(), test_handler.DetachQuestion)
 				test.PUT("/:id/start", middleware.OnlyTeacher(), test_handler.StartTest)
 				test.PUT("/:id/stop", middleware.OnlyTeacher(), test_handler.StopTest)
+				test.POST("/:id/begin", test_handler.BeginTest)
+				test.PUT("/:id/finish", test_handler.FinishTest)
 			}
 
 			question := protected.Group("/question")

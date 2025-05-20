@@ -16,15 +16,15 @@ type TestQuestion struct {
 }
 
 type UserTests struct {
-	TestID uint           `gorm:"primary_key"`
-	UserID uint           `gorm:"primary_key"`
-	Status UserTestStatus `gorm:"type:varchar(20);not null;status IN ('READY_FOR_PRORGESS', 'IN_PROGRESS', 'COMPLETED');default:'READY_FOR_PROGRESS'"`
+	TestID   uint `gorm:"primary_key"`
+	UserID   uint `gorm:"primary_key"`
+	Progress uint
+	Status   UserTestStatus `gorm:"type:varchar(20);not null;status IN ('IN_PROGRESS', 'COMPLETED');default:'IN_PROGRESS'"`
 }
 
 type UserTestStatus string
 
 const (
-	ReadyForProgress UserTestStatus = "READY_FOR_PROGRESS"
-	InProgress       UserTestStatus = "IN_PROGRESS"
-	Completed        UserTestStatus = "COMPLETED"
+	InProgress UserTestStatus = "IN_PROGRESS"
+	Completed  UserTestStatus = "COMPLETED"
 )

@@ -250,10 +250,9 @@ func (h *TestHandler) DetachQuestion(c *gin.Context) {
 }
 
 // StartTest godoc
-// @Summary Запустить тест
+// @Summary Запустить тест (учитель)
 // @Tags Test
 // @Security BearerAuth
-// @Accept json
 // @Produce json
 // @Param id path int true "ID теста"
 // @Success 200 {object} domain.TestResponse
@@ -286,10 +285,9 @@ func (h *TestHandler) StartTest(c *gin.Context) {
 }
 
 // StopTest godoc
-// @Summary Остановить тест
+// @Summary Остановить тест (учитель)
 // @Tags Test
 // @Security BearerAuth
-// @Accept json
 // @Produce json
 // @Param id path int true "ID теста"
 // @Success 200 {object} domain.TestResponse
@@ -318,4 +316,82 @@ func (h *TestHandler) StopTest(c *gin.Context) {
 
 	response := test.ToTestResponse()
 	c.JSON(http.StatusOK, response)
+}
+
+// BeginTest godoc
+// @Summary Приступить к тесту (студент)
+// @Tags Test
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "ID теста"
+// @Success 200
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /test/{id}/begin [post]
+func (h *TestHandler) BeginTest(c *gin.Context) {
+	userID := c.GetUint("userID")
+
+	testID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.logger.Warn("Validation error, invalid test ID", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	err = h.tu.StartTest(c.Request.Context(), &domain.UserTests{
+		UserID: userID,
+		TestID: uint(testID),
+	})
+	if err != nil {
+		h.logger.Warn("Internal error", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
+}
+
+// FinishTest godoc
+// @Summary Завершить тест (студент)
+// @Tags Test
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "ID теста"
+// @Param input body FinishTestDTO true "Результат по тесту в процентах"
+// @Success 200
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /test/{id}/finish [put]
+func (h *TestHandler) FinishTest(c *gin.Context) {
+	userID := c.GetUint("userID")
+	testID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		h.logger.Warn("Validation error, invalid test ID", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	var req FinishTestDTO
+	if err := c.ShouldBind(&req); err != nil {
+		h.logger.Warn("Validation error, invalid body", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	err = h.tu.EndTest(c.Request.Context(), &domain.UserTests{
+		UserID:   userID,
+		TestID:   uint(testID),
+		Progress: req.Progress,
+		Status:   domain.Ended,
+	})
+	if err != nil {
+		h.logger.Warn("Internal error", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
 }

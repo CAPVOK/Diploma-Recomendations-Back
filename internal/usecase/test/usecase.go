@@ -21,6 +21,8 @@ type ITestUsecase interface {
 	Delete(ctx context.Context, id uint) error
 	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
 	DetachQuestion(ctx context.Context, testID uint, questionID uint) error
+	StartTest(ctx context.Context, userTests *domain.UserTests) error
+	EndTest(ctx context.Context, userTest *domain.UserTests) error
 }
 
 func NewTestUsecase(repo test.ITestRepository, logger *zap.Logger) ITestUsecase {
@@ -79,6 +81,22 @@ func (u *testUsecase) AttachQuestion(ctx context.Context, testID uint, questionI
 
 func (u *testUsecase) DetachQuestion(ctx context.Context, testID uint, questionID uint) error {
 	if err := u.repo.DetachQuestion(ctx, testID, questionID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *testUsecase) StartTest(ctx context.Context, userTests *domain.UserTests) error {
+	if err := u.repo.CreateUserTest(ctx, userTests); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *testUsecase) EndTest(ctx context.Context, userTest *domain.UserTests) error {
+	if err := u.repo.UpdateUserTest(ctx, userTest); err != nil {
 		return err
 	}
 
