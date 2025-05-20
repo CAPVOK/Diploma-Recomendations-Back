@@ -248,3 +248,74 @@ func (h *TestHandler) DetachQuestion(c *gin.Context) {
 
 	c.Status(http.StatusOK)
 }
+
+// StartTest godoc
+// @Summary Запустить тест
+// @Tags Test
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "ID теста"
+// @Success 200 {object} domain.TestResponse
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /test/{id}/start [put]
+func (h *TestHandler) StartTest(c *gin.Context) {
+	idStr := c.Param("id")
+	testID, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Warn("Validation error, invalid test ID", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	test, err := h.tu.Update(c.Request.Context(), &domain.Test{
+		ID:     uint(testID),
+		Status: domain.Progress,
+	})
+	if err != nil {
+		h.logger.Warn("Internal error", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	response := test.ToTestResponse()
+
+	c.JSON(http.StatusOK, response)
+}
+
+// StopTest godoc
+// @Summary Остановить тест
+// @Tags Test
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "ID теста"
+// @Success 200 {object} domain.TestResponse
+// @Failure 400 {object} domain.Error
+// @Failure 401 {object} domain.Error
+// @Failure 500 {object} domain.Error
+// @Router /test/{id}/stop [put]
+func (h *TestHandler) StopTest(c *gin.Context) {
+	idStr := c.Param("id")
+	testID, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Warn("Validation error, invalid test ID", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		return
+	}
+
+	test, err := h.tu.Update(c.Request.Context(), &domain.Test{
+		ID:     uint(testID),
+		Status: domain.Ended,
+	})
+	if err != nil {
+		h.logger.Warn("Internal error", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
+		return
+	}
+
+	response := test.ToTestResponse()
+	c.JSON(http.StatusOK, response)
+}

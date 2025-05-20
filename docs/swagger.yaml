@@ -75,6 +75,8 @@ definitions:
     type: object
   diprec_api_internal_domain.TestResponse:
     properties:
+      assignee:
+        type: string
       createdAt:
         type: string
       deadline:
@@ -85,11 +87,15 @@ definitions:
         type: integer
       name:
         type: string
+      status:
+        type: string
       updatedAt:
         type: string
     type: object
   diprec_api_internal_domain.TestResponseWithQuestions:
     properties:
+      assignee:
+        type: string
       createdAt:
         type: string
       deadline:
@@ -104,6 +110,8 @@ definitions:
         items:
           $ref: '#/definitions/diprec_api_internal_domain.QuestionResponse'
         type: array
+      status:
+        type: string
       updatedAt:
         type: string
     type: object
@@ -922,6 +930,74 @@ paths:
       security:
       - BearerAuth: []
       summary: Прикрепить вопрос к тесту
+      tags:
+      - Test
+  /test/{id}/start:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.TestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Запустить тест
+      tags:
+      - Test
+  /test/{id}/stop:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID теста
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.TestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/diprec_api_internal_domain.Error'
+      security:
+      - BearerAuth: []
+      summary: Остановить тест
       tags:
       - Test
   /user/me:
