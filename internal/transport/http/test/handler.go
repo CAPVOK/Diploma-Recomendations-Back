@@ -77,6 +77,8 @@ func (h *TestHandler) Create(c *gin.Context) {
 // @Failure 500 {object} domain.Error
 // @Router /test/{id} [get]
 func (h *TestHandler) GetByID(c *gin.Context) {
+	userID := c.GetUint("userID")
+
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -85,7 +87,7 @@ func (h *TestHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	test, err := h.tu.GetByID(c.Request.Context(), uint(id))
+	test, err := h.tu.GetByID(c.Request.Context(), uint(id), userID)
 	if err != nil {
 		h.logger.Warn("Internal error", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})

@@ -15,8 +15,8 @@ type testUsecase struct {
 
 type ITestUsecase interface {
 	Create(ctx context.Context, test *domain.Test, courseID uint) (*domain.Test, error)
-	Get(ctx context.Context, courseID uint) ([]*domain.Test, error)
-	GetByID(ctx context.Context, id uint) (*domain.Test, error)
+	Get(ctx context.Context, courseID, userID uint) ([]*domain.Test, error)
+	GetByID(ctx context.Context, id, userID uint) (*domain.Test, error)
 	Update(ctx context.Context, test *domain.Test) (*domain.Test, error)
 	Delete(ctx context.Context, id uint) error
 	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
@@ -37,8 +37,8 @@ func (u *testUsecase) Create(ctx context.Context, test *domain.Test, courseID ui
 	return test, nil
 }
 
-func (u *testUsecase) Get(ctx context.Context, courseID uint) ([]*domain.Test, error) {
-	tests, err := u.repo.Get(ctx, courseID)
+func (u *testUsecase) Get(ctx context.Context, courseID, userID uint) ([]*domain.Test, error) {
+	tests, err := u.repo.Get(ctx, courseID, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +46,8 @@ func (u *testUsecase) Get(ctx context.Context, courseID uint) ([]*domain.Test, e
 	return tests, nil
 }
 
-func (u *testUsecase) GetByID(ctx context.Context, id uint) (*domain.Test, error) {
-	test, err := u.repo.GetByID(ctx, id)
+func (u *testUsecase) GetByID(ctx context.Context, id, userID uint) (*domain.Test, error) {
+	test, err := u.repo.GetByID(ctx, id, userID)
 	if err != nil {
 		return nil, err
 	}

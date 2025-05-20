@@ -89,6 +89,8 @@ func (h *CourseHandler) Get(c *gin.Context) {
 // @Failure 500 {object} domain.Error
 // @Router /course/{id} [get]
 func (h *CourseHandler) GetByID(c *gin.Context) {
+	userID := c.GetUint("userID")
+
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -97,7 +99,7 @@ func (h *CourseHandler) GetByID(c *gin.Context) {
 		return
 	}
 
-	course, err := h.cu.GetById(c.Request.Context(), uint(id))
+	course, err := h.cu.GetById(c.Request.Context(), uint(id), userID)
 	if err != nil {
 		if errors.Is(err, domain.ErrCourseNotFound) {
 			h.logger.Error("Get course failed", zap.Error(err))

@@ -15,8 +15,8 @@ type testRepository struct {
 
 type ITestRepository interface {
 	Create(ctx context.Context, test *domain.Test, courseID uint) error
-	Get(ctx context.Context, courseID uint) ([]*domain.Test, error)
-	GetByID(ctx context.Context, id uint) (*domain.Test, error)
+	Get(ctx context.Context, courseID, userID uint) ([]*domain.Test, error)
+	GetByID(ctx context.Context, id, userID uint) (*domain.Test, error)
 	Update(ctx context.Context, test *domain.Test) error
 	Delete(ctx context.Context, id uint) error
 	AttachQuestion(ctx context.Context, testID uint, questionID uint) error
@@ -35,10 +35,10 @@ func (r *testRepository) Create(ctx context.Context, test *domain.Test, courseID
 	return r.db.Model(test).Association("Courses").Append(&domain.Course{ID: courseID})
 }
 
-func (r *testRepository) Get(ctx context.Context, courseID uint) ([]*domain.Test, error) {
+func (r *testRepository) Get(ctx context.Context, courseID, userID uint) ([]*domain.Test, error) {
 	var course domain.Course
 
-	err := r.db.Preload("Tests").First(&course, courseID).Error
+	err := r.db.Preload("Tests").First(&course, courseID, userID).Error
 	if err != nil {
 		return nil, err
 	}
@@ -46,10 +46,15 @@ func (r *testRepository) Get(ctx context.Context, courseID uint) ([]*domain.Test
 	return course.Tests, nil
 }
 
-func (r *testRepository) GetByID(ctx context.Context, id uint) (*domain.Test, error) {
+func (r *testRepository) GetByID(ctx context.Context, id, userID uint) (*domain.Test, error) {
 	var test domain.Test
 
-	err := r.db.Preload("Questions", "deleted_at IS NULL").Where("id = ?", id).First(&test).Error
+	err := r.db.
+		Preload("Questions", "deleted_at IS NULL").
+		Preload("UserTests", "user_id = ?", userID). // ← фильтрация по userID
+		Where("id = ?", id).
+		First(&test).Error
+
 	if err != nil {
 		return nil, err
 	}

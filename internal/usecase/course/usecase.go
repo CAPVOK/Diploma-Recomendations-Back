@@ -17,7 +17,7 @@ type ICourseUsecase interface {
 	Create(ctx context.Context, course *domain.Course) (*domain.Course, error)
 	Update(ctx context.Context, course *domain.Course) (*domain.Course, error)
 	Delete(ctx context.Context, id uint) error
-	GetById(ctx context.Context, id uint) (*domain.Course, error)
+	GetById(ctx context.Context, id, userID uint) (*domain.Course, error)
 	Get(ctx context.Context) ([]*domain.Course, error)
 	Enroll(ctx context.Context, courseID uint, userID uint) error
 }
@@ -53,8 +53,8 @@ func (u *courseUsecase) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (u *courseUsecase) GetById(ctx context.Context, id uint) (*domain.Course, error) {
-	course, err := u.repo.GetByID(ctx, id)
+func (u *courseUsecase) GetById(ctx context.Context, id, userID uint) (*domain.Course, error) {
+	course, err := u.repo.GetByID(ctx, id, userID)
 	if err != nil {
 		return nil, err
 	}

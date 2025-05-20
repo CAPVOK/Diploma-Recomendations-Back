@@ -16,6 +16,7 @@ type Test struct {
 	Deadline    time.Time   `gorm:"not null"`
 	Courses     []*Course   `gorm:"many2many:course_tests;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Questions   []*Question `gorm:"many2many:test_questions;constraint:OnUpdate:CASCADE;OnDelete:CASCADE;"`
+	UserTests   UserTests   `gorm:"foreignKey:test_id;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 type TestStatus string
@@ -31,14 +32,15 @@ func (t TestStatus) String() string {
 }
 
 type TestResponse struct {
-	ID          uint      `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Status      string    `json:"status"`
-	Assignee    string    `json:"assignee"`
-	Deadline    time.Time `json:"deadline"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID               uint      `json:"id"`
+	Name             string    `json:"name"`
+	Description      string    `json:"description"`
+	Status           string    `json:"status"`
+	Assignee         string    `json:"assignee"`
+	Deadline         time.Time `json:"deadline"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
+	UserTestResponse `json:"result,omitempty"`
 }
 
 type TestResponseWithQuestions struct {
@@ -59,14 +61,15 @@ func (a Assignee) String() string {
 
 func (c *Test) ToTestResponse() TestResponse {
 	return TestResponse{
-		ID:          c.ID,
-		Name:        c.Name,
-		Description: c.Description,
-		Status:      c.Status.String(),
-		Assignee:    c.Assignee.String(),
-		Deadline:    c.Deadline,
-		CreatedAt:   c.CreatedAt,
-		UpdatedAt:   c.UpdatedAt,
+		ID:               c.ID,
+		Name:             c.Name,
+		Description:      c.Description,
+		Status:           c.Status.String(),
+		Assignee:         c.Assignee.String(),
+		Deadline:         c.Deadline,
+		CreatedAt:        c.CreatedAt,
+		UpdatedAt:        c.UpdatedAt,
+		UserTestResponse: c.UserTests.ToUserTestResponse(),
 	}
 }
 

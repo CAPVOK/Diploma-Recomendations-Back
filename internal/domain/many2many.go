@@ -28,3 +28,19 @@ const (
 	InProgress UserTestStatus = "IN_PROGRESS"
 	Completed  UserTestStatus = "COMPLETED"
 )
+
+func (ut UserTestStatus) String() string {
+	return string(ut)
+}
+
+type UserTestResponse struct {
+	Progress uint   `json:"progress"`
+	Status   string `json:"status"`
+}
+
+func (ut *UserTests) ToUserTestResponse() UserTestResponse {
+	return UserTestResponse{
+		Progress: ut.Progress,
+		Status:   ut.Status.String(),
+	}
+}

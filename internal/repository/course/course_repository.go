@@ -16,7 +16,7 @@ type courseRepository struct {
 type ICourseRepository interface {
 	Create(ctx context.Context, course *domain.Course) error
 	Get(ctx context.Context) ([]*domain.Course, error)
-	GetByID(ctx context.Context, id uint) (*domain.Course, error)
+	GetByID(ctx context.Context, id, userID uint) (*domain.Course, error)
 	Update(ctx context.Context, course *domain.Course) error
 	Delete(ctx context.Context, id uint) error
 	EnrollUser(ctx context.Context, courseID uint, userID uint) error
@@ -44,10 +44,14 @@ func (r *courseRepository) Get(ctx context.Context) ([]*domain.Course, error) {
 	return courses, nil
 }
 
-func (r *courseRepository) GetByID(ctx context.Context, id uint) (*domain.Course, error) {
+func (r *courseRepository) GetByID(ctx context.Context, id, userID uint) (*domain.Course, error) {
 	var course domain.Course
 
-	err := r.db.Preload("Tests", "deleted_at IS NULL").First(&course, id).Error
+	err := r.db.
+		Preload("Tests", "deleted_at IS NULL").
+		Preload("Tests.UserTests", "user_id = ?", userID).
+		First(&course, id).Error
+
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, domain.ErrCourseNotFound
