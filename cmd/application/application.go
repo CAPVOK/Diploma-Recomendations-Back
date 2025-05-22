@@ -90,7 +90,7 @@ func (a *Application) Start(
 				test.DELETE("/:id", middleware.OnlyTeacher(), test_handler.Delete)
 				test.PUT("/:id", middleware.OnlyTeacher(), test_handler.Update)
 				test.POST("/:id/question", middleware.OnlyTeacher(), test_handler.AttachQuestion)
-				test.DELETE("/:id/question", middleware.OnlyTeacher(), test_handler.DetachQuestion)
+				test.DELETE("/delete/:testId/:questionId", middleware.OnlyTeacher(), test_handler.DetachQuestion)
 				test.PUT("/:id/start", middleware.OnlyTeacher(), test_handler.StartTest)
 				test.PUT("/:id/stop", middleware.OnlyTeacher(), test_handler.StopTest)
 				test.POST("/:id/begin", test_handler.BeginTest)

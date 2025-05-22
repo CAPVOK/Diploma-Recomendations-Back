@@ -216,33 +216,31 @@ func (h *TestHandler) AttachQuestion(c *gin.Context) {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param id path int true "ID теста"
-// @Param input body RemoveQuestionDTO true "ID вопроса для удаления"
+// @Param testID path int true "ID теста"
+// @Param questionID path int true "ID вопроса"
 // @Success 200 "Вопрос откреплён"
 // @Failure 400 {object} domain.Error "Неверный запрос"
 // @Failure 401 {object} domain.Error "Unauthorized"
 // @Failure 500 {object} domain.Error "Internal Server Error"
-// @Router /test/{id}/question [delete]
+// @Router /test/delete/{testId}/{questionId} [delete]
 func (h *TestHandler) DetachQuestion(c *gin.Context) {
 	// Парсим ID теста
-	idStr := c.Param("id")
-	testID, err := strconv.Atoi(idStr)
+	testID, err := strconv.Atoi(c.Param("testId"))
 	if err != nil {
-		h.logger.Warn("Validation error, invalid test ID", zap.Error(err))
-		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+		h.logger.Warn("Invalid test ID", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: "Неверный ID теста"})
 		return
 	}
 
-	// Парсим тело запроса
-	var req RemoveQuestionDTO
-	if err := c.ShouldBindJSON(&req); err != nil {
-		h.logger.Warn("Validation error, invalid body", zap.Error(err))
-		c.JSON(http.StatusBadRequest, domain.Error{Message: domain.ErrInvalidRequestBody.Error()})
+	questionID, err := strconv.Atoi(c.Param("questionId"))
+	if err != nil {
+		h.logger.Warn("Invalid question ID", zap.Error(err))
+		c.JSON(http.StatusBadRequest, domain.Error{Message: "Неверный ID вопроса"})
 		return
 	}
 
 	// Выполняем детач
-	if err := h.tu.DetachQuestion(c.Request.Context(), uint(testID), req.QuestionID); err != nil {
+	if err := h.tu.DetachQuestion(c.Request.Context(), uint(testID), uint(questionID)); err != nil {
 		h.logger.Error("DetachQuestion failed", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, domain.Error{Message: err.Error()})
 		return
