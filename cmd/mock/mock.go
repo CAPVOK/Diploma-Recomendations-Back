@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -87,15 +88,23 @@ func seed(db *gorm.DB) error {
 	}
 
 	/* 3) Тесты: 3 + 3 */
+
+	layout := "2006-01-02 15:04:05-07"
+
+	deadline, err := time.Parse(layout, "2025-05-23 17:40:00+00")
+	if err != nil {
+		panic(err)
+	}
+
 	feTests := []domain.Test{
-		{Name: "HTML & CSS Basics", Description: "Основы вёрстки"},
-		{Name: "JavaScript Fundamentals", Description: "Переменные и DOM"},
-		{Name: "React Essentials", Description: "Компоненты и хуки"},
+		{Name: "HTML & CSS Basics", Description: "Основы вёрстки", Deadline: deadline},
+		{Name: "JavaScript Fundamentals", Description: "Переменные и DOM", Deadline: deadline},
+		{Name: "React Essentials", Description: "Компоненты и хуки", Deadline: deadline},
 	}
 	beTests := []domain.Test{
-		{Name: "HTTP & REST", Description: "Методы и коды"},
-		{Name: "Go Basics", Description: "Синтаксис и горутины"},
-		{Name: "Databases & SQL", Description: "SELECT и индексы"},
+		{Name: "HTTP & REST", Description: "Методы и коды", Deadline: deadline},
+		{Name: "Go Basics", Description: "Синтаксис и горутины", Deadline: deadline},
+		{Name: "Databases & SQL", Description: "SELECT и индексы", Deadline: deadline},
 	}
 	if err := db.WithContext(ctx).Create(&feTests).Error; err != nil {
 		return err

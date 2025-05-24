@@ -19,7 +19,7 @@ type UserTests struct {
 	TestID   uint `gorm:"primary_key"`
 	UserID   uint `gorm:"primary_key"`
 	Progress uint
-	Status   UserTestStatus `gorm:"type:varchar(20);not null;status IN ('IN_PROGRESS', 'COMPLETED');default:'IN_PROGRESS'"`
+	Status   UserTestStatus `gorm:"type:varchar(20);not null;status IN ('IN_PROGRESS', 'ENDED');default:'IN_PROGRESS'"`
 }
 
 type UserTestStatus string
